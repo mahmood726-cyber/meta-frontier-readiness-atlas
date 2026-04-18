@@ -1,0 +1,4102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta-Frontier Readiness Atlas</title>
+  <style>
+    :root {
+      --ink: #16222d;
+      --muted: #586875;
+      --line: rgba(22, 34, 45, 0.12);
+      --panel: rgba(255, 255, 255, 0.78);
+      --bg-a: #f4f0e8;
+      --bg-b: #e0ebf0;
+      --green: #0f766e;
+      --amber: #d97706;
+      --navy: #1d4ed8;
+      --rose: #be185d;
+      --shadow: 0 28px 72px rgba(22, 34, 45, 0.15);
+      --radius: 1.4rem;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Aptos", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.2), transparent 27rem),
+        radial-gradient(circle at 86% 16%, rgba(217, 119, 6, 0.14), transparent 22rem),
+        radial-gradient(circle at 68% 88%, rgba(29, 78, 216, 0.12), transparent 22rem),
+        linear-gradient(160deg, var(--bg-a), #fbfaf8 48%, var(--bg-b));
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: min(1200px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1.4rem 0 2.5rem;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .hero,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -35% auto;
+      width: 24rem;
+      height: 24rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.18), transparent 60%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.42rem 0.82rem;
+      border-radius: 999px;
+      background: rgba(15, 118, 110, 0.1);
+      color: var(--green);
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0.9rem 0 0.75rem;
+      font-size: clamp(2.3rem, 5vw, 4.5rem);
+      line-height: 0.92;
+      max-width: 12ch;
+    }
+
+    .hero p {
+      max-width: 74ch;
+      line-height: 1.72;
+      color: var(--muted);
+      margin: 0 0 1rem;
+      font-size: 1.02rem;
+    }
+
+    .hero-actions,
+    .pill-row,
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+
+    .hero-actions a,
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 0.72rem 1rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 140ms ease, opacity 140ms ease, background 140ms ease;
+    }
+
+    button:hover,
+    .hero-actions a:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: rgba(22, 34, 45, 0.08);
+      color: var(--ink);
+    }
+
+    .pill {
+      padding: 0.45rem 0.76rem;
+      border-radius: 999px;
+      background: rgba(22, 34, 45, 0.06);
+      font-size: 0.84rem;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(12, 1fr);
+      margin-top: 1rem;
+    }
+
+    .panel { padding: 1.25rem; }
+    .span-3 { grid-column: span 3; }
+    .span-5 { grid-column: span 5; }
+    .span-7 { grid-column: span 7; }
+    .span-12 { grid-column: 1 / -1; }
+
+    .evidence-grid,
+    .program-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    .scenario-grid,
+    .portfolio-grid,
+    .theme-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .scenario-grid {
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .portfolio-grid {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .theme-grid {
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    }
+
+    .mesh-grid,
+    .slider-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .evidence-card,
+    .program-card,
+    .scenario-card,
+    .portfolio-list,
+    .theme-card {
+      border: 1px solid var(--line);
+      border-radius: 1.15rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.66);
+    }
+
+    .evidence-card h3,
+    .program-card h3 {
+      margin-bottom: 0.45rem;
+    }
+
+    .scenario-card h3,
+    .theme-card h3,
+    .portfolio-list h3 {
+      margin-bottom: 0.35rem;
+    }
+
+    .slider-card {
+      border: 1px solid var(--line);
+      border-radius: 1.15rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.66);
+    }
+
+    .slider-card input[type="range"] {
+      width: 100%;
+      margin-top: 0.65rem;
+    }
+
+    .slider-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .evidence-metric {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--green);
+      margin-bottom: 0.25rem;
+    }
+
+    .scenario-score {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 0.25rem;
+    }
+
+    .metric-value {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800;
+      line-height: 0.95;
+      margin-bottom: 0.35rem;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    h2, h3 {
+      margin: 0 0 0.8rem;
+      line-height: 1.05;
+    }
+
+    .section-note {
+      margin: 0 0 0.9rem;
+      color: var(--muted);
+      line-height: 1.68;
+    }
+
+    .controls { justify-content: space-between; }
+    .controls-left {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+    }
+
+    select {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 0.7rem 0.95rem;
+      font: inherit;
+      min-width: 13rem;
+    }
+
+    .method-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    }
+
+    .method-card {
+      border: 1px solid var(--line);
+      border-radius: 1.25rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.66);
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .method-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.9rem;
+      align-items: flex-start;
+    }
+
+    .rank-badge {
+      min-width: 2.3rem;
+      height: 2.3rem;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(15, 118, 110, 0.12);
+      color: var(--green);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .band {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border-radius: 999px;
+      padding: 0.34rem 0.68rem;
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      width: fit-content;
+    }
+
+    .band.deployable { background: rgba(15, 118, 110, 0.12); color: var(--green); }
+    .band.emerging { background: rgba(29, 78, 216, 0.12); color: var(--navy); }
+    .band.research { background: rgba(217, 119, 6, 0.14); color: var(--amber); }
+    .band.speculative { background: rgba(190, 24, 93, 0.12); color: var(--rose); }
+
+    .method-card h3 { margin: 0; font-size: 1.15rem; }
+    .method-theme { color: var(--muted); font-size: 0.9rem; }
+
+    .score-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.6rem;
+    }
+
+    .score-box {
+      border-radius: 1rem;
+      padding: 0.7rem;
+      background: rgba(22, 34, 45, 0.045);
+    }
+
+    .score-box strong {
+      display: block;
+      font-size: 1.15rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .score-box span { color: var(--muted); font-size: 0.8rem; }
+    .method-card p { margin: 0; color: var(--muted); line-height: 1.65; }
+    .method-card ul { margin: 0; padding-left: 1rem; color: var(--muted); line-height: 1.55; }
+    .method-detail {
+      border-top: 1px dashed var(--line);
+      padding-top: 0.75rem;
+      display: grid;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .method-detail strong {
+      color: var(--ink);
+    }
+
+    .list-stack {
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .list-item {
+      border-radius: 0.95rem;
+      background: rgba(22, 34, 45, 0.045);
+      padding: 0.8rem;
+    }
+
+    .list-item strong {
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .mini-kicker {
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+    }
+
+    .theme-bar {
+      width: 100%;
+      height: 0.6rem;
+      border-radius: 999px;
+      background: rgba(22, 34, 45, 0.08);
+      overflow: hidden;
+      margin-top: 0.7rem;
+    }
+
+    .theme-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--green), var(--navy));
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    th, td {
+      padding: 0.75rem 0.6rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .validation-shell {
+      border-radius: 1.2rem;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.62);
+      padding: 1rem;
+    }
+
+    .validation-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(22, 34, 45, 0.08);
+      color: var(--ink);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-badge.ready { background: rgba(15, 118, 110, 0.12); color: var(--green); }
+    .status-badge.error { background: rgba(190, 24, 93, 0.12); color: var(--rose); }
+
+    progress {
+      width: 100%;
+      height: 0.65rem;
+      accent-color: var(--green);
+    }
+
+    pre {
+      margin: 0;
+      padding: 0.9rem;
+      border-radius: 1rem;
+      background: #f4f7f8;
+      border: 1px solid var(--line);
+      font-size: 0.83rem;
+      white-space: pre-wrap;
+      overflow: auto;
+      max-height: 22rem;
+    }
+
+    .tiny {
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    a { color: var(--green); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 980px) {
+      .span-3, .span-5, .span-7 { grid-column: 1 / -1; }
+      .hero, .panel { padding: 1rem; }
+      .method-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topbar">
+      <div>Meta-analysis frontier scan distilled into a deployability map</div>
+      <div><a href="plan.html">Open plan</a></div>
+    </div>
+
+    <section class="hero">
+      <div class="eyebrow">2024 to 2026 Methods Atlas</div>
+      <h1>Which frontier meta-analysis methods are actually usable now?</h1>
+      <p>
+        This atlas ranks recent methodological directions by what matters in practice: software maturity,
+        empirical support, breadth of use, novelty, bias-handling power, and decision lift. It is not a
+        citation leaderboard. It is a pragmatic reading of the recent methods literature.
+      </p>
+      <div class="pill-row">
+        <span class="pill">Primary-source links only</span>
+        <span class="pill">Interpretive, not bibliometric</span>
+        <span class="pill">Weighted scoring is visible</span>
+        <span class="pill">WebR can independently recompute the bands</span>
+      </div>
+      <div class="hero-actions" style="margin-top:1rem;">
+        <a class="btn-primary" href="#methods">Jump to ranked methods</a>
+        <a class="btn-secondary" href="#validation">Run validation</a>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="panel span-3">
+        <div class="metric-value" id="metricTotal">0</div>
+        <div class="metric-label">Frontier methods tracked</div>
+      </section>
+      <section class="panel span-3">
+        <div class="metric-value" id="metricDeployable">0</div>
+        <div class="metric-label">Deployable now</div>
+      </section>
+      <section class="panel span-3">
+        <div class="metric-value" id="metricEmerging">0</div>
+        <div class="metric-label">High-promise emerging</div>
+      </section>
+      <section class="panel span-3">
+        <div class="metric-value" id="metricExperimental">0</div>
+        <div class="metric-label">Research-stage or speculative</div>
+      </section>
+
+      <section class="panel span-7">
+        <h2>How to read the map</h2>
+        <p class="section-note">
+          The key distinction is between <strong>frontier value</strong> and <strong>deployability</strong>.
+          A method can be statistically impressive and still be a poor default choice if software support,
+          diagnostics, or real-world use remain thin.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Deployability = software + empirical support + scope</span>
+          <span class="pill">Frontier = novelty + bias handling + decision lift</span>
+          <span class="pill">Priority = 55% frontier + 45% deployability</span>
+        </div>
+      </section>
+
+      <section class="panel span-5">
+        <h2>Quick read</h2>
+        <ul class="section-note" style="padding-left:1rem; margin:0;">
+          <li>Closest to routine use: narrow small-sample fixes, exact-likelihood sparse-data tools, and RoBMA-style Bayesian bias adjustment.</li>
+          <li>Most strategically important frontier: target-population transportability and survival IPD network synthesis.</li>
+          <li>Still sensitivity-analysis territory: non-normal random-effects models and multi-indication borrowing.</li>
+          <li>Most experimental: individualized treatment-rule synthesis and RCT plus observational integration frameworks.</li>
+        </ul>
+      </section>
+
+      <section class="panel span-12">
+        <h2>C: Drive Evidence Base</h2>
+        <p class="section-note">
+          These local projects turn the page from a reading list into a research build map. They provide the
+          simulation engines, empirical bias data, survival benchmarks, and package prototypes needed to push
+          the frontier methods into publishable comparative work.
+        </p>
+        <div class="evidence-grid" id="localEvidenceGrid"></div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Local Research Mesh</h2>
+        <p class="section-note">
+          This section starts from a bundled <code>C:\Projects</code> snapshot captured from the local terminal
+          scan. It shows where local support was densest at capture time and which recently touched projects
+          were most ready to be pulled into the next frontier build.
+        </p>
+        <div class="hero-actions" style="margin-bottom:0.8rem;">
+          <button class="btn-secondary" id="loadMeshBtn" type="button">Load live projects folder</button>
+          <button class="btn-secondary" id="exportMeshBtn" type="button">Export mesh snapshot</button>
+          <button class="btn-secondary" id="importMeshBtn" type="button">Import mesh snapshot</button>
+          <button class="btn-secondary" id="resetMeshBtn" type="button">Reset to bundled snapshot</button>
+        </div>
+        <input id="importMeshInput" type="file" accept="application/json,.json" style="display:none;">
+        <div class="tiny" id="meshStatus" style="margin-bottom:0.85rem;">Bundled snapshot status is preparing.</div>
+        <div class="mesh-grid" id="meshGrid"></div>
+        <div class="portfolio-grid" style="margin-top:1rem;">
+          <div class="portfolio-list">
+            <div class="mini-kicker">Recent Project Pulse</div>
+            <div class="list-stack" id="recentProjectList"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">What The Mesh Means</div>
+            <div class="list-stack" id="meshNarrativeList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Mesh Impact Lab</h2>
+        <p class="section-note">
+          This compares the active mesh snapshot against the bundled baseline so it is obvious when your live
+          local portfolio changes the recommended method or program.
+        </p>
+        <div class="scenario-grid" id="meshImpactGrid"></div>
+        <div class="portfolio-grid" style="margin-top:1rem;">
+          <div class="portfolio-list">
+            <div class="mini-kicker">Method Movers</div>
+            <div class="list-stack" id="meshImpactMethodList"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Program Movers</div>
+            <div class="list-stack" id="meshImpactProgramList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Programs That Could Move the Field</h2>
+        <p class="section-note">
+          Each program below combines frontier methods with local assets already on <code>C:\</code>. The goal
+          is not another descriptive review. It is a paper or software study that can change how these methods
+          are judged or used.
+        </p>
+        <div class="program-grid" id="programGrid"></div>
+      </section>
+
+      <section class="panel span-5">
+        <div class="controls" style="align-items:flex-start;">
+          <div class="controls-left">
+            <h2 style="margin:0;">Scenario Lab</h2>
+          </div>
+          <div class="controls-left">
+            <select id="scenarioSelect" aria-label="Scenario preset">
+              <option value="balanced">Balanced frontier map</option>
+              <option value="build-now">Build-now default stack</option>
+              <option value="bias-crisis">Bias crisis and correction stress-test</option>
+              <option value="decision-transport">Decision-targeted transportability</option>
+              <option value="network-survival">Network and survival frontier</option>
+              <option value="moonshot" selected>Moonshot methods program</option>
+            </select>
+          </div>
+        </div>
+        <p class="section-note" id="scenarioNarrative">
+          Scenario-specific scoring is preparing.
+        </p>
+        <div class="scenario-grid" id="scenarioInsightGrid"></div>
+      </section>
+
+      <section class="panel span-7">
+        <h2>Scenario Portfolio</h2>
+        <p class="section-note">
+          This turns the scores into an executable research package: which method families to build first and
+          which publishable programs best match the selected decision scenario.
+        </p>
+        <div class="portfolio-grid">
+          <div class="portfolio-list">
+            <div class="mini-kicker">Methods To Build</div>
+            <div class="list-stack" id="portfolioMethods"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Programs To Run</div>
+            <div class="list-stack" id="portfolioPrograms"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Theme Pressure Map</h2>
+        <p class="section-note">
+          Theme cards aggregate the ranked methods under the current scenario so it is obvious where the local
+          evidence base is strongest and where the next publishable paper is most likely to land.
+        </p>
+        <div class="theme-grid" id="themeGrid"></div>
+      </section>
+
+      <section class="panel span-12" id="modeledPromise">
+        <h2>Modeled Promise Frontier</h2>
+        <p class="section-note">
+          This layer scores every method family across all six strategic scenarios at once. The promise score
+          rewards high average fit, strong worst-case behavior, stability across scenarios, local publishability,
+          and empirical evidence, while separately tracking upside and execution risk.
+        </p>
+        <div class="scenario-grid" id="modelInsightGrid"></div>
+        <div class="portfolio-grid" style="margin-top:1rem;">
+          <div class="portfolio-list">
+            <div class="mini-kicker">High-Upside First Queue</div>
+            <div class="list-stack" id="highUpsideList"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Priority Build Queue</div>
+            <div class="list-stack" id="priorityBuildList"></div>
+          </div>
+        </div>
+        <div style="overflow:auto; margin-top:1rem;">
+          <table>
+            <thead>
+              <tr>
+                <th>Method family</th>
+                <th>Posterior</th>
+                <th>P10 to P90</th>
+                <th>Top-3 prob</th>
+                <th>Pareto</th>
+                <th>Upside</th>
+                <th>Risk</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody id="promiseTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Moonshot Triage</h2>
+        <p class="section-note">
+          High-upside methods are not all the same. This triage splits them into robust core bets, tractable
+          moonshots with real posterior traction, and fragile moonshots that are exciting but currently under-supported.
+        </p>
+        <div class="portfolio-grid">
+          <div class="portfolio-list">
+            <div class="mini-kicker">Robust Core</div>
+            <div class="list-stack" id="robustCoreList"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Tractable Moonshots</div>
+            <div class="list-stack" id="tractableMoonshotList"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Fragile Moonshots</div>
+            <div class="list-stack" id="fragileMoonshotList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Scenario Score Matrix</h2>
+        <p class="section-note">
+          This matrix shows the full cross-scenario score profile for each method family so it is obvious which
+          approaches are universally strong and which depend on one strategic framing.
+        </p>
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Method family</th>
+                <th>Balanced</th>
+                <th>Build now</th>
+                <th>Bias crisis</th>
+                <th>Decision transport</th>
+                <th>Network survival</th>
+                <th>Moonshot</th>
+                <th>Posterior</th>
+                <th>Upside</th>
+              </tr>
+            </thead>
+            <tbody id="scenarioMatrixBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Program Frontier</h2>
+        <p class="section-note">
+          The same modeling logic is applied to the actual research programs, so the app can tell you not only
+          which methods matter most but which concrete program of work should be executed first.
+        </p>
+        <div class="scenario-grid" id="programModelGrid"></div>
+        <div style="overflow:auto; margin-top:1rem;">
+          <table>
+            <thead>
+              <tr>
+                <th>Program</th>
+                <th>Posterior</th>
+                <th>P10 to P90</th>
+                <th>Top-3 prob</th>
+                <th>Worst-case</th>
+                <th>Risk</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody id="programPromiseTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Research Stack Builder</h2>
+        <p class="section-note">
+          Isolation is the wrong unit of decision. This layer assembles methods into hedged build stacks, turns
+          programs into ordered execution chains, and surfaces the biggest frontier gaps that still need
+          software, empirical replay, or failure-mapping support.
+        </p>
+        <div class="scenario-grid" id="stackBuilderSummary"></div>
+        <div class="portfolio-grid" style="margin-top:1rem;">
+          <div class="portfolio-list">
+            <div class="mini-kicker">Method Bundles</div>
+            <div class="list-stack" id="methodBundleList"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Program Chains</div>
+            <div class="list-stack" id="programChainList"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Gap Radar</div>
+            <div class="list-stack" id="gapRadarList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Custom Strategy Tuner</h2>
+        <p class="section-note">
+          Presets are useful, but not enough. This lab lets you manually tilt the atlas toward upside,
+          posterior credibility, local leverage, stability, or execution safety and see the resulting queue.
+        </p>
+        <div class="slider-grid">
+          <div class="slider-card">
+            <strong>Upside</strong>
+            <div class="slider-meta"><span>Field-reset potential</span><span id="customUpsideValue">70</span></div>
+            <input id="customUpsideRange" type="range" min="0" max="100" value="70">
+          </div>
+          <div class="slider-card">
+            <strong>Posterior</strong>
+            <div class="slider-meta"><span>Cross-scenario credibility</span><span id="customPosteriorValue">82</span></div>
+            <input id="customPosteriorRange" type="range" min="0" max="100" value="82">
+          </div>
+          <div class="slider-card">
+            <strong>Local leverage</strong>
+            <div class="slider-meta"><span>C: drive build support</span><span id="customLocalValue">76</span></div>
+            <input id="customLocalRange" type="range" min="0" max="100" value="76">
+          </div>
+          <div class="slider-card">
+            <strong>Stability</strong>
+            <div class="slider-meta"><span>Scenario robustness</span><span id="customStabilityValue">68</span></div>
+            <input id="customStabilityRange" type="range" min="0" max="100" value="68">
+          </div>
+          <div class="slider-card">
+            <strong>Safety</strong>
+            <div class="slider-meta"><span>Low execution risk</span><span id="customSafetyValue">54</span></div>
+            <input id="customSafetyRange" type="range" min="0" max="100" value="54">
+          </div>
+        </div>
+        <div class="scenario-grid" id="tunerSummaryGrid" style="margin-top:1rem;"></div>
+        <div class="portfolio-grid" style="margin-top:1rem;">
+          <div class="portfolio-list">
+            <div class="mini-kicker">Tuned Method Queue</div>
+            <div class="list-stack" id="tunedMethodList"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Tuned Program Queue</div>
+            <div class="list-stack" id="tunedProgramList"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Decision Memo</div>
+            <div class="list-stack" id="tunedMemoList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Strategy Sweep</h2>
+        <p class="section-note">
+          This sweep reruns the frontier under several named strategic stances so you can see whether the same
+          method and program survive across moonshot, safe-build, and local-first decision styles.
+        </p>
+        <div class="scenario-grid" id="strategySweepGrid"></div>
+        <div style="overflow:auto; margin-top:1rem;">
+          <table>
+            <thead>
+              <tr>
+                <th>Stance</th>
+                <th>Top method</th>
+                <th>Method score</th>
+                <th>Top program</th>
+                <th>Program score</th>
+              </tr>
+            </thead>
+            <tbody id="strategySweepTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <div class="controls">
+          <div class="controls-left">
+            <h2 style="margin:0;">Method Comparator</h2>
+            <span class="tiny">Compare any two method families under the current scenario and manual tuning.</span>
+          </div>
+          <div class="controls-left">
+            <select id="compareMethodA" aria-label="Compare method A"></select>
+            <select id="compareMethodB" aria-label="Compare method B"></select>
+          </div>
+        </div>
+        <p class="section-note">
+          This panel exposes the actual trade-off: tuned score, posterior credibility, scenario fit, upside,
+          safety, and local build support rather than one compressed rank number.
+        </p>
+        <div class="scenario-grid" id="compareSummaryGrid"></div>
+        <div class="portfolio-grid" style="margin-top:1rem;">
+          <div class="portfolio-list">
+            <div class="mini-kicker">Method A Trace</div>
+            <div class="list-stack" id="compareTraceA"></div>
+          </div>
+          <div class="portfolio-list">
+            <div class="mini-kicker">Method B Trace</div>
+            <div class="list-stack" id="compareTraceB"></div>
+          </div>
+        </div>
+        <div style="overflow:auto; margin-top:1rem;">
+          <table>
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Method A</th>
+                <th>Method B</th>
+                <th>Delta</th>
+              </tr>
+            </thead>
+            <tbody id="compareMetricTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Study Brief Studio</h2>
+        <p class="section-note">
+          This turns the current scenario, tuning weights, bundle logic, and local mesh into a compact research
+          brief that can be copied or downloaded as a markdown note.
+        </p>
+        <div class="hero-actions" style="margin-bottom:0.8rem;">
+          <button class="btn-primary" id="copyBriefBtn" type="button">Copy study brief</button>
+          <button class="btn-secondary" id="downloadBriefBtn" type="button">Download markdown</button>
+        </div>
+        <div class="tiny" id="briefStatus" style="margin-bottom:0.9rem;">Brief not exported yet.</div>
+        <pre id="briefPreview"></pre>
+      </section>
+
+      <section class="panel span-12" id="methods">
+        <div class="controls">
+          <div class="controls-left">
+            <h2 style="margin:0;">Ranked Methods</h2>
+            <span class="tiny">Scenario, sort, and band filters update the method deck below.</span>
+          </div>
+          <div class="controls-left">
+            <select id="sortSelect" aria-label="Sort methods">
+              <option value="upside" selected>Sort by upside score</option>
+              <option value="promise">Sort by modeled posterior promise</option>
+              <option value="scenario">Sort by current scenario fit</option>
+              <option value="priority">Sort by baseline priority score</option>
+              <option value="deployability">Sort by deployability</option>
+              <option value="frontier">Sort by frontier score</option>
+              <option value="year">Sort by most recent lead paper</option>
+            </select>
+            <select id="bandSelect" aria-label="Filter by band">
+              <option value="all">All bands</option>
+              <option value="Deployable now">Deployable now</option>
+              <option value="High-promise emerging">High-promise emerging</option>
+              <option value="Research-stage">Research-stage</option>
+              <option value="Speculative frontier">Speculative frontier</option>
+            </select>
+          </div>
+        </div>
+        <p class="section-note">
+          Scores are heuristic summaries based on the papers and available implementation signals.
+        </p>
+        <div class="method-grid" id="methodGrid"></div>
+      </section>
+
+      <section class="panel span-12">
+        <h2>Evidence Table</h2>
+        <p class="section-note">
+          Lead papers anchor each method family. Links point to journal pages or PubMed records used in the scan.
+        </p>
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Method family</th>
+                <th>Lead paper</th>
+                <th>Journal</th>
+                <th>Year</th>
+                <th>Scenario fit</th>
+                <th>Reading</th>
+              </tr>
+            </thead>
+            <tbody id="sourceTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel span-12" id="validation">
+        <h2>WebR Validation</h2>
+        <p class="section-note">
+          This reviewer-facing panel loads WebR in the browser, rebuilds the weighted scores in base R,
+          and checks whether R reproduces the same baseline ranking, tuned queue, sweep winners, comparator
+          result, and readiness-band counts shown by the page.
+        </p>
+        <div class="validation-shell">
+          <div class="validation-top">
+            <div><div class="status-badge" id="webrStatus">Not loaded</div></div>
+            <div class="hero-actions" style="margin:0;">
+              <button class="btn-primary" id="runValidationBtn" type="button">Run WebR validation</button>
+              <button class="btn-secondary" id="copyScriptBtn" type="button">Copy R script</button>
+            </div>
+          </div>
+          <div id="progressWrap" style="display:none; margin-bottom:0.75rem;">
+            <div class="tiny" id="progressText" style="margin-bottom:0.35rem;">Preparing WebR...</div>
+            <progress id="progressBar" max="100" value="0"></progress>
+          </div>
+          <div id="validationResults" class="tiny" style="margin-bottom:0.9rem;">Validation has not been run yet.</div>
+          <details>
+            <summary style="cursor:pointer; font-weight:700; margin-bottom:0.7rem;">R script preview</summary>
+            <pre id="scriptPreview"></pre>
+          </details>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const methods = [
+      {
+        id: "small-k-rve-smd",
+        name: "Small-k robust variance / interval correction for SMD synthesis",
+        theme: "Small-sample inference",
+        software: 82,
+        empirical: 78,
+        scope: 61,
+        novelty: 69,
+        biasGuard: 58,
+        decisionLift: 62,
+        year: 2024,
+        summary: "The narrowest but most usable frontier: it directly targets undercoverage when the number of studies is small and standardized mean differences are pooled.",
+        bestFor: "Few-study SMD meta-analyses with imbalanced sample sizes.",
+        caution: "Useful now, but mostly for SMD settings rather than every effect metric.",
+        source: {
+          title: "Robust variance estimation in small meta-analysis with the standardized mean difference",
+          authors: "Zejnullahi and Hedges",
+          journal: "Research Synthesis Methods",
+          url: "https://pubmed.ncbi.nlm.nih.gov/37717978/"
+        }
+      },
+      {
+        id: "sparse-exact-likelihood",
+        name: "Exact-likelihood sparse-data meta-analysis and publication-bias sensitivity",
+        theme: "Sparse data and rare events",
+        software: 71,
+        empirical: 74,
+        scope: 63,
+        novelty: 78,
+        biasGuard: 82,
+        decisionLift: 73,
+        year: 2024,
+        summary: "This family replaces shaky normal approximations for low-event settings and extends bias sensitivity analysis into the rare-event regime.",
+        bestFor: "Rare events, sparse counts, and double-zero dominated evidence bases.",
+        caution: "The logic is strong, but workflows are still less routine than standard random-effects pipelines.",
+        source: {
+          title: "Sensitivity analysis for publication bias in meta-analysis of sparse data based on exact likelihood",
+          authors: "Hu, Zhou, and Hattori",
+          journal: "Biometrics",
+          url: "https://pubmed.ncbi.nlm.nih.gov/39253987/"
+        }
+      },
+      {
+        id: "p-hacking-selection",
+        name: "P-hacking-aware meta-analysis with within-study selection",
+        theme: "Selective reporting and p-hacking",
+        software: 58,
+        empirical: 63,
+        scope: 58,
+        novelty: 87,
+        biasGuard: 88,
+        decisionLift: 72,
+        year: 2024,
+        summary: "A genuine conceptual advance: it treats meta-analytic distortion as arising not only between studies but also within them via p-hacking.",
+        bestFor: "Literatures where selective analysis within studies is at least as plausible as publication bias between studies.",
+        caution: "Still closer to robustness analysis and diagnostics than routine primary estimation.",
+        source: {
+          title: "P-hacking in meta-analyses: A formalization and new meta-analytic methods",
+          authors: "Mathur",
+          journal: "Research Synthesis Methods",
+          url: "https://pubmed.ncbi.nlm.nih.gov/38273211/"
+        }
+      },
+      {
+        id: "robma-regression",
+        name: "Robust Bayesian meta-regression with publication-bias model averaging",
+        theme: "Bayesian bias adjustment",
+        software: 78,
+        empirical: 72,
+        scope: 64,
+        novelty: 79,
+        biasGuard: 86,
+        decisionLift: 76,
+        year: 2025,
+        summary: "RoBMA-regression moves moderator analysis closer to a realistic frontier default by averaging across competing bias structures rather than pretending publication bias is absent.",
+        bestFor: "Moderator-heavy syntheses where publication bias cannot be ignored.",
+        caution: "Bayesian workflow literacy is required, and the model space can be cognitively heavy for casual users.",
+        source: {
+          title: "Robust Bayesian meta-regression: Model-averaged moderation analysis in the presence of publication bias",
+          authors: "Bartos, Maier, Stanley, and Wagenmakers",
+          journal: "Psychological Methods",
+          url: "https://pubmed.ncbi.nlm.nih.gov/39964496/"
+        }
+      },
+      {
+        id: "dependent-effects-bias-correction",
+        name: "Selective-reporting correction for dependent effect sizes",
+        theme: "Dependent effects and multivariate bias correction",
+        software: 55,
+        empirical: 60,
+        scope: 57,
+        novelty: 84,
+        biasGuard: 85,
+        decisionLift: 70,
+        year: 2025,
+        summary: "This addresses a real modern pain point: bias correction when each study contributes multiple correlated effects rather than one clean estimate.",
+        bestFor: "Education, psychology, and public-health syntheses with clustered or multivariate outcomes.",
+        caution: "Still an advanced-methods choice rather than a routine package-first workflow.",
+        source: {
+          title: "Adapting methods for correcting selective reporting bias in meta-analysis of dependent effect sizes",
+          authors: "Chen and Pustejovsky",
+          journal: "Psychological Methods",
+          url: "https://pubmed.ncbi.nlm.nih.gov/40638274/"
+        }
+      },
+      {
+        id: "target-population-ipd",
+        name: "Target-population treatment-effect estimation with IPD meta-analysis",
+        theme: "Transportability and causal evidence synthesis",
+        software: 69,
+        empirical: 70,
+        scope: 63,
+        novelty: 86,
+        biasGuard: 75,
+        decisionLift: 89,
+        year: 2025,
+        summary: "This is where meta-analysis starts looking like causal transportability: the target is no longer the average trial population but a defined real-world population.",
+        bestFor: "Policy or HTA settings where trial samples do not match the decision population.",
+        caution: "Requires individual-level data and stronger design assumptions than ordinary aggregate-data pooling.",
+        source: {
+          title: "Estimating target population treatment effects in meta-analysis with individual participant-level data",
+          authors: "Hong, Liu, and Stuart",
+          journal: "Statistical Methods in Medical Research",
+          url: "https://pubmed.ncbi.nlm.nih.gov/39828917/"
+        }
+      },
+      {
+        id: "rct-os-integration",
+        name: "RCT plus observational-study integration with explicit sensitivity parameters",
+        theme: "Causal evidence synthesis",
+        software: 51,
+        empirical: 57,
+        scope: 55,
+        novelty: 88,
+        biasGuard: 79,
+        decisionLift: 84,
+        year: 2025,
+        summary: "A high-value direction conceptually: combine internal validity from trials with external relevance from observational datasets through explicit sensitivity analysis.",
+        bestFor: "Questions where trial evidence exists but lacks population reach and observational data fill the gap.",
+        caution: "Still clearly research-stage. The assumptions are rich, and routine tooling is not yet mature.",
+        source: {
+          title: "Using a two-parameter sensitivity analysis framework to efficiently combine randomized and nonrandomized studies",
+          authors: "Yu and colleagues",
+          journal: "JRSS Series B",
+          url: "https://academic.oup.com/jrsssb/advance-article-abstract/doi/10.1093/jrsssb/qkaf079/8384135"
+        }
+      },
+      {
+        id: "ipd-cox-nma",
+        name: "IPD network meta-analysis for time-to-event outcomes using Cox regression",
+        theme: "IPD survival network meta-analysis",
+        software: 67,
+        empirical: 69,
+        scope: 64,
+        novelty: 83,
+        biasGuard: 68,
+        decisionLift: 86,
+        year: 2025,
+        summary: "One of the stronger specialized frontiers because it opens covariate-aware survival synthesis across treatment networks.",
+        bestFor: "Time-to-event networks where effect modification matters and IPD are available.",
+        caution: "Strongly specialized. Data access and survival-model competence are both required.",
+        source: {
+          title: "Network Meta-Analysis With Individual Participant-Level Data of Time-to-Event Outcomes Using Cox Regression",
+          authors: "Hua and colleagues",
+          journal: "Statistics in Medicine",
+          url: "https://pubmed.ncbi.nlm.nih.gov/39964207/"
+        }
+      },
+      {
+        id: "sparse-two-stage-bayes-itr",
+        name: "Sparse two-stage Bayesian synthesis for individualized treatment rules",
+        theme: "Personalized treatment synthesis",
+        software: 44,
+        empirical: 54,
+        scope: 49,
+        novelty: 90,
+        biasGuard: 61,
+        decisionLift: 87,
+        year: 2025,
+        summary: "Frontier work aimed at personalized medicine rather than classical pooled effects, especially when individual-level data cannot be centrally shared.",
+        bestFor: "Multisite learning of individualized treatment rules under privacy or data-sharing constraints.",
+        caution: "High strategic value, but still speculative for ordinary review teams.",
+        source: {
+          title: "Sparse 2-stage Bayesian meta-analysis for individualized treatments",
+          authors: "Shen, Moodie, and Golchi",
+          journal: "Biometrics",
+          url: "https://pubmed.ncbi.nlm.nih.gov/40705493/"
+        }
+      },
+      {
+        id: "nonnormal-random-effects",
+        name: "Meta-analysis with non-normal random-effects distributions",
+        theme: "Distributional robustness",
+        software: 46,
+        empirical: 58,
+        scope: 50,
+        novelty: 74,
+        biasGuard: 52,
+        decisionLift: 63,
+        year: 2025,
+        summary: "Methodologically important when heterogeneity is clearly skewed or clustered, but still best treated as a sensitivity-analysis layer rather than the default engine.",
+        bestFor: "Outlier-heavy or multimodal evidence bases where the normal random-effects assumption looks implausible.",
+        caution: "The recent review itself suggests starting from the normal model and moving here selectively.",
+        source: {
+          title: "Meta-analysis models relaxing the random-effects normality assumption: methodological systematic review and simulation study",
+          authors: "Panagiotopoulou and colleagues",
+          journal: "BMC Medical Research Methodology",
+          url: "https://link.springer.com/article/10.1186/s12874-025-02658-3"
+        }
+      },
+      {
+        id: "multi-indication-hta",
+        name: "Multi-indication meta-analysis for health technology assessment",
+        theme: "HTA multi-indication borrowing",
+        software: 53,
+        empirical: 61,
+        scope: 58,
+        novelty: 77,
+        biasGuard: 57,
+        decisionLift: 79,
+        year: 2026,
+        summary: "A decision-driven frontier: borrow evidence across indications to reduce uncertainty in HTA rather than staying locked inside one indication silo.",
+        bestFor: "Cross-indication appraisal problems, especially in oncology and payer-facing evidence synthesis.",
+        caution: "Promising, but the current evidence base is still simulation-led and context-sensitive.",
+        source: {
+          title: "Methods of multi-indication meta-analysis for health technology assessment: A simulation study",
+          authors: "Glynn and colleagues",
+          journal: "Research Synthesis Methods",
+          url: "https://pubmed.ncbi.nlm.nih.gov/41626884/"
+        }
+      },
+      {
+        id: "causal-meta-targeting",
+        name: "Causally interpretable meta-analysis with explicit target effects",
+        theme: "Causal interpretation and target estimands",
+        software: 57,
+        empirical: 62,
+        scope: 60,
+        novelty: 84,
+        biasGuard: 72,
+        decisionLift: 82,
+        year: 2024,
+        summary: "This reframes meta-analysis around clearly defined causal estimands instead of pooled effects that float free of a population target.",
+        bestFor: "Evidence syntheses that need to say exactly which causal effect is being transported or summarized.",
+        caution: "More a conceptual and design upgrade than a turnkey software workflow.",
+        source: {
+          title: "Causally interpretable meta-analysis: Clearly defined causal effects and two case studies",
+          authors: "Rott and colleagues",
+          journal: "Research Synthesis Methods",
+          url: "https://pubmed.ncbi.nlm.nih.gov/37696604/"
+        }
+      },
+      {
+        id: "bayesian-bias-workflow",
+        name: "Bayesian workflow for bias-adjustment models in meta-analysis",
+        theme: "Bayesian bias adjustment",
+        software: 66,
+        empirical: 69,
+        scope: 61,
+        novelty: 80,
+        biasGuard: 83,
+        decisionLift: 78,
+        year: 2026,
+        summary: "Rather than proposing one more bias-adjusted model, this frontier formalizes how to diagnose prior sensitivity, predictive fit, and workflow fragility in bias-adjustment analyses.",
+        bestFor: "Teams using Bayesian bias-adjustment models who need reproducible sensitivity and model-checking workflows.",
+        caution: "The power is in disciplined workflow, not in a magic single-model fix.",
+        source: {
+          title: "Bayesian workflow for bias-adjustment model in meta-analysis",
+          authors: "Jung and Aloe",
+          journal: "Research Synthesis Methods",
+          url: "https://pubmed.ncbi.nlm.nih.gov/41635950/"
+        }
+      },
+      {
+        id: "random-walks-nma",
+        name: "Random-walk evidence flow and path weighting in network meta-analysis",
+        theme: "Network meta-analysis structure and evidence flow",
+        software: 62,
+        empirical: 63,
+        scope: 59,
+        novelty: 76,
+        biasGuard: 66,
+        decisionLift: 71,
+        year: 2024,
+        summary: "This line of work turns network meta-analysis contribution paths into mathematically explicit random walks, making evidence flow less arbitrary and more interpretable.",
+        bestFor: "NMA settings where contribution, path weighting, and indirect evidence structure are central to trust appraisal.",
+        caution: "A transparency and diagnostics advance rather than a universal effect-estimation overhaul.",
+        source: {
+          title: "Shortest path or random walks? A framework for path weights in network meta-analysis",
+          authors: "Rucker and colleagues",
+          journal: "Statistics in Medicine",
+          url: "https://pubmed.ncbi.nlm.nih.gov/39044353/"
+        }
+      },
+      {
+        id: "longitudinal-bayesian-nma",
+        name: "Bayesian longitudinal network meta-analysis with Gaussian random walks and drift",
+        theme: "Longitudinal and repeated-measure NMA",
+        software: 54,
+        empirical: 66,
+        scope: 56,
+        novelty: 85,
+        biasGuard: 62,
+        decisionLift: 79,
+        year: 2026,
+        summary: "A major extension for NMA beyond one endpoint at one time point, allowing continuous outcomes to evolve over time and across outcomes.",
+        bestFor: "Trials reporting repeated continuous outcomes or dual outcomes across multiple time points.",
+        caution: "Methodologically strong but still specialized and computationally heavier than standard NMA workflows.",
+        source: {
+          title: "Bayesian Network Meta-Analysis With One or Two Continuous Outcomes Measured at Multiple Time Points Using Gaussian Random Walks With Drift",
+          authors: "Cheng, da Costa, and Tomlinson",
+          journal: "Statistics in Medicine",
+          url: "https://pubmed.ncbi.nlm.nih.gov/41636579/"
+        }
+      }
+    ];
+
+    const bandThresholds = {
+      deployable: 74,
+      emerging: 63,
+      research: 50
+    };
+
+    const localEvidenceCards = [
+      {
+        title: "Experimental Framework",
+        metric: "299 methods / 12 scenarios / 23 superior",
+        note: "The local experimental framework already stress-tests nearly three hundred methods and found 23 that beat DerSimonian-Laird under its benchmark scheme.",
+        asset: "C:\\Projects\\experimental-meta-analysis\\results\\summary_20251231_153843.json"
+      },
+      {
+        title: "Meta-Epidemiology Bias Dataset",
+        metric: "57 empirical comparisons / 300 expanded records",
+        note: "The local bias-correction project shows a concrete failure regime: standard random-effects masks publication bias while corrected methods imply roughly 9% to 13% underestimation by observational studies.",
+        asset: "C:\\Projects\\meta-epidemiology-bias-correction\\results\\COMPARISON_57_REAL_ONLY.csv"
+      },
+      {
+        title: "IPD Frontier Benchmarks",
+        metric: "Centered, piecewise, RMST, KM, transport, federated all at 1.00 pass rate",
+        note: "The existing IPD benchmark suite already gives a local launchpad for survival-method benchmarking beyond ordinary pairwise synthesis.",
+        asset: "C:\\HTML apps\\IPD-Meta-Pro\\dev\\benchmarks\\latest_gap_methods_r_benchmark.json"
+      },
+      {
+        title: "Robust Package Launchpad",
+        metric: "Robust estimation + moderator selection + causal helpers",
+        note: "The local metaverse package already contains contamination models, knockoffs, spike-and-slab, selective inference, and transportability helpers that can be linked to the frontier papers.",
+        asset: "C:\\Projects\\metaverse-robust-MA\\README.md"
+      },
+      {
+        title: "NMA and HTA Platform",
+        metric: "Advanced NMA + ENMA-SNMA + HTA project base",
+        note: "Multiple local projects provide a live bridge from longitudinal / evidence-flow methods into reproducible NMA and HTA implementations.",
+        asset: "C:\\Projects\\advanced-nma-pooling and C:\\Projects\\repo300-ENMA-SNMA"
+      }
+    ];
+
+    const localResearchMesh = [
+      {
+        title: "Meta-analysis core",
+        count: 29,
+        note: "The local bench is densest in core meta-analysis, extraction, bias, and robust synthesis work."
+      },
+      {
+        title: "IPD and survival",
+        count: 9,
+        note: "There is a real survival and registry spine for transportability, KM, and IPD benchmarking."
+      },
+      {
+        title: "Network and HTA",
+        count: 8,
+        note: "Network, ENMA, and HTA work are present enough to support serious comparative builds."
+      },
+      {
+        title: "Automation and extraction",
+        count: 12,
+        note: "Your extraction and automation base is large enough to sustain reproducible update cycles."
+      }
+    ];
+
+    const recentProjectPulse = [
+      { name: "MetaExtract", when: "2026-03-27 07:19" },
+      { name: "MLMResearch", when: "2026-03-27 07:19" },
+      { name: "MLM501", when: "2026-03-27 07:19" },
+      { name: "LFA", when: "2026-03-27 07:19" },
+      { name: "KMcurve", when: "2026-03-27 07:19" },
+      { name: "Multipledatameta", when: "2026-03-27 07:16" },
+      { name: "Pairwise70", when: "2026-03-27 07:16" },
+      { name: "Metanew", when: "2026-03-27 07:16" }
+    ];
+
+    const defaultMeshSnapshot = {
+      source: "Bundled snapshot",
+      projectRoot: "C:\\Projects",
+      capturedAt: "2026-03-27 07:19",
+      clusters: localResearchMesh.map(item => ({ ...item })),
+      recentProjects: recentProjectPulse.map(item => ({ ...item }))
+    };
+
+    const atlasStateKey = "metaFrontierReadinessAtlasState.v2";
+    const atlasMeshKey = "metaFrontierReadinessAtlasMesh.v1";
+    const atlasControlIds = [
+      "scenarioSelect",
+      "sortSelect",
+      "bandSelect",
+      "customUpsideRange",
+      "customPosteriorRange",
+      "customLocalRange",
+      "customStabilityRange",
+      "customSafetyRange",
+      "compareMethodA",
+      "compareMethodB"
+    ];
+
+    const strategyArchetypes = [
+      { id: "balanced", label: "Balanced director", raw: { upside: 68, posterior: 82, local: 74, stability: 74, safety: 60 } },
+      { id: "moonshot", label: "Field-reset moonshot", raw: { upside: 100, posterior: 58, local: 46, stability: 42, safety: 28 } },
+      { id: "safe", label: "Safe-build sponsor", raw: { upside: 42, posterior: 92, local: 78, stability: 94, safety: 100 } },
+      { id: "local", label: "Local-first builder", raw: { upside: 52, posterior: 70, local: 100, stability: 64, safety: 72 } },
+      { id: "credibility", label: "Credibility maximizer", raw: { upside: 38, posterior: 100, local: 66, stability: 92, safety: 84 } }
+    ];
+
+    const meshClusterDefinitions = [
+      {
+        title: "Meta-analysis core",
+        note: "The local bench is densest in core meta-analysis, extraction, bias, and robust synthesis work.",
+        pattern: /meta|pairwise|cochrane|dta|bias|metaverse|experimental/i
+      },
+      {
+        title: "IPD and survival",
+        note: "There is a real survival and registry spine for transportability, KM, and IPD benchmarking.",
+        pattern: /ipd|km|survival|registry|hfpef|worldipd/i
+      },
+      {
+        title: "Network and HTA",
+        note: "Network, ENMA, and HTA work are present enough to support serious comparative builds.",
+        pattern: /nma|hta|surronma|repo300|advanced-nma|enma-snma/i
+      },
+      {
+        title: "Automation and extraction",
+        note: "Your extraction and automation base is large enough to sustain reproducible update cycles.",
+        pattern: /extract|ctgov|living|watchman|html|engine/i
+      }
+    ];
+
+    const atlasThemeClusterMap = {
+      "Small-sample inference": ["Meta-analysis core", "Automation and extraction"],
+      "Sparse data and rare events": ["Meta-analysis core", "Automation and extraction"],
+      "Selective reporting and p-hacking": ["Meta-analysis core", "Automation and extraction"],
+      "Bayesian bias adjustment": ["Meta-analysis core", "Automation and extraction"],
+      "Dependent effects and multivariate bias correction": ["Meta-analysis core", "Automation and extraction"],
+      "Distributional robustness": ["Meta-analysis core"],
+      "Transportability and causal evidence synthesis": ["IPD and survival", "Meta-analysis core"],
+      "Causal evidence synthesis": ["IPD and survival", "Meta-analysis core"],
+      "Causal interpretation and target estimands": ["IPD and survival", "Meta-analysis core"],
+      "IPD survival network meta-analysis": ["IPD and survival", "Network and HTA"],
+      "Personalized treatment synthesis": ["IPD and survival", "Automation and extraction"],
+      "Network meta-analysis structure and evidence flow": ["Network and HTA"],
+      "Longitudinal and repeated-measure NMA": ["Network and HTA", "IPD and survival"],
+      "HTA multi-indication borrowing": ["Network and HTA", "Meta-analysis core"]
+    };
+
+    let activeMeshSnapshot = null;
+
+    const programs = [
+      {
+        title: "Selection-Model Failure Cartography",
+        score: 93,
+        themes: ["Selective reporting and p-hacking", "Bayesian bias adjustment", "Dependent effects and multivariate bias correction"],
+        localStrength: 92,
+        execution: 84,
+        novelty: 90,
+        decision: 81,
+        why: "Map when selection models fail versus when PET-PEESE, trim-and-fill, RoBMA-regression, and bias workflows remain stable.",
+        localData: "Use the 57 empirical comparisons plus the expanded 300-comparison processed dataset.",
+        output: "A methods paper on failure regimes rather than another one-method advocacy paper."
+      },
+      {
+        title: "Exact Sparse-Data Robustness Bakeoff",
+        score: 89,
+        themes: ["Sparse data and rare events", "Small-sample inference"],
+        localStrength: 94,
+        execution: 86,
+        novelty: 88,
+        decision: 84,
+        why: "Benchmark exact-likelihood sparse-data methods against small-sample and regularized estimators on the local 299-method simulation platform and 501 Cochrane datasets.",
+        localData: "experimental-meta-analysis plus Pairwise70-linked Cochrane integration.",
+        output: "A publishable benchmark study that identifies which sparse-data methods survive both simulation and empirical replay."
+      },
+      {
+        title: "Transportable Meta-Analysis Pipeline",
+        score: 91,
+        themes: ["Transportability and causal evidence synthesis", "Causal evidence synthesis", "Causal interpretation and target estimands"],
+        localStrength: 88,
+        execution: 78,
+        novelty: 93,
+        decision: 95,
+        why: "Unify target-population estimands, causal interpretation, and RCT-plus-observational sensitivity within one reproducible workflow.",
+        localData: "IPD and registry-focused projects on C:, plus the target-population and RCT+observational papers.",
+        output: "A software-plus-methods paper that makes transportability operational rather than conceptual."
+      },
+      {
+        title: "IPD Survival Frontier Benchmark",
+        score: 95,
+        themes: ["IPD survival network meta-analysis", "Personalized treatment synthesis", "Network meta-analysis structure and evidence flow", "Longitudinal and repeated-measure NMA"],
+        localStrength: 95,
+        execution: 87,
+        novelty: 90,
+        decision: 94,
+        why: "Benchmark within-trial centering, piecewise exponential models, RMST synthesis, and federated survival against the local HIV and ovarian benchmark suites.",
+        localData: "IPD-Meta-Pro benchmark JSONs already report perfect local parity for centered, piecewise, RMST, transport, and federated tracks.",
+        output: "A strong publishable benchmark manuscript plus a reproducible HTML companion."
+      },
+      {
+        title: "Robust Meta-Analysis Stack",
+        score: 88,
+        themes: ["Bayesian bias adjustment", "Distributional robustness", "Small-sample inference", "Sparse data and rare events"],
+        localStrength: 90,
+        execution: 84,
+        novelty: 87,
+        decision: 85,
+        why: "Fuse metaverse-style robust estimation and moderator selection with exact sparse-data ideas and current bias workflows.",
+        localData: "metaverse-robust-MA plus meta-epidemiology-bias-correction and experimental-meta-analysis.",
+        output: "A package and paper defining a realistic robust default stack for difficult evidence bases."
+      }
+    ];
+
+    function cloneMeshSnapshot(snapshot) {
+      return {
+        ...snapshot,
+        clusters: (snapshot.clusters || []).map(item => ({ ...item })),
+        recentProjects: (snapshot.recentProjects || []).map(item => ({ ...item }))
+      };
+    }
+
+    function defaultMeshSnapshotState() {
+      return cloneMeshSnapshot(defaultMeshSnapshot);
+    }
+
+    function normalizeMeshSnapshot(raw) {
+      if (!raw || !Array.isArray(raw.clusters) || !Array.isArray(raw.recentProjects)) {
+        return defaultMeshSnapshotState();
+      }
+      return {
+        source: raw.source || "Loaded snapshot",
+        projectRoot: raw.projectRoot || "Selected folder",
+        capturedAt: raw.capturedAt || defaultMeshSnapshot.capturedAt,
+        clusters: raw.clusters
+          .filter(item => item && item.title)
+          .map(item => ({
+            title: item.title,
+            count: Number(item.count) || 0,
+            note: item.note || meshClusterDefinitions.find(def => def.title === item.title)?.note || ""
+          })),
+        recentProjects: raw.recentProjects
+          .filter(item => item && item.name)
+          .map(item => ({
+            name: item.name,
+            when: item.when || "Unknown"
+          }))
+      };
+    }
+
+    function readStoredMeshSnapshot() {
+      try {
+        if (typeof localStorage === "undefined") return null;
+        const raw = localStorage.getItem(atlasMeshKey);
+        return raw ? normalizeMeshSnapshot(JSON.parse(raw)) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function writeStoredMeshSnapshot(snapshot) {
+      try {
+        if (typeof localStorage === "undefined") return;
+        localStorage.setItem(atlasMeshKey, JSON.stringify(snapshot));
+      } catch {
+        // Ignore storage failures in restricted environments.
+      }
+    }
+
+    function clearStoredMeshSnapshot() {
+      try {
+        if (typeof localStorage === "undefined") return;
+        if (typeof localStorage.removeItem === "function") localStorage.removeItem(atlasMeshKey);
+      } catch {
+        // Ignore storage failures in restricted environments.
+      }
+    }
+
+    function getMeshSnapshot() {
+      if (!activeMeshSnapshot) {
+        activeMeshSnapshot = readStoredMeshSnapshot() || defaultMeshSnapshotState();
+      }
+      return activeMeshSnapshot;
+    }
+
+    function setMeshSnapshot(snapshot) {
+      activeMeshSnapshot = normalizeMeshSnapshot(snapshot);
+      writeStoredMeshSnapshot(activeMeshSnapshot);
+      return activeMeshSnapshot;
+    }
+
+    function resetMeshSnapshot() {
+      activeMeshSnapshot = defaultMeshSnapshotState();
+      clearStoredMeshSnapshot();
+      return activeMeshSnapshot;
+    }
+
+    function meshStatusText(snapshot = getMeshSnapshot()) {
+      if (snapshot.source === "Live browser scan") {
+        return `${snapshot.source} of ${snapshot.projectRoot}, captured ${snapshot.capturedAt}. Mesh-sensitive local scores are currently using this live scan.`;
+      }
+      return `${snapshot.source} for ${snapshot.projectRoot}, captured ${snapshot.capturedAt}. Load a folder in a Chromium browser to replace it with a live scan.`;
+    }
+
+    function exportMeshSnapshot() {
+      if (typeof document === "undefined") return;
+      const snapshot = getMeshSnapshot();
+      const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "meta-frontier-atlas-mesh-snapshot.json";
+      if (typeof anchor.click === "function") anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+      document.getElementById("meshStatus").textContent = `Mesh snapshot exported from ${snapshot.source}.`;
+    }
+
+    function formatMeshTimestamp(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value || "Unknown");
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0");
+      const minutes = String(date.getMinutes()).padStart(2, "0");
+      return `${year}-${month}-${day} ${hours}:${minutes}`;
+    }
+
+    async function estimateDirectoryLastTouched(handle, depth = 2, budget = { count: 0, limit: 2400 }) {
+      let latest = 0;
+      try {
+        for await (const entry of handle.values()) {
+          if (budget.count >= budget.limit) break;
+          budget.count += 1;
+          if (entry.kind === "file") {
+            try {
+              const file = await entry.getFile();
+              latest = Math.max(latest, file.lastModified || 0);
+            } catch {}
+          } else if (entry.kind === "directory" && depth > 0 && !entry.name.startsWith(".")) {
+            latest = Math.max(latest, await estimateDirectoryLastTouched(entry, depth - 1, budget));
+          }
+        }
+      } catch {}
+      return latest;
+    }
+
+    async function buildLiveMeshSnapshot(handle, updateStatus = () => {}) {
+      const directories = [];
+      for await (const entry of handle.values()) {
+        if (entry.kind === "directory" && !entry.name.startsWith(".")) directories.push(entry);
+      }
+      updateStatus(`Scanning ${directories.length} project folders...`);
+      const clusters = meshClusterDefinitions.map(definition => ({
+        title: definition.title,
+        count: directories.filter(entry => definition.pattern.test(entry.name)).length,
+        note: definition.note
+      }));
+      const budget = { count: 0, limit: Math.max(1800, directories.length * 36) };
+      const recentBuffer = [];
+      for (let index = 0; index < directories.length; index += 1) {
+        const entry = directories[index];
+        updateStatus(`Scanning ${index + 1}/${directories.length}: ${entry.name}`);
+        const lastTouched = await estimateDirectoryLastTouched(entry, 2, budget);
+        recentBuffer.push({ name: entry.name, lastTouched });
+      }
+      const recentProjects = recentBuffer
+        .filter(item => item.lastTouched > 0)
+        .sort((a, b) => b.lastTouched - a.lastTouched || a.name.localeCompare(b.name))
+        .slice(0, 8)
+        .map(item => ({
+          name: item.name,
+          when: formatMeshTimestamp(item.lastTouched)
+        }));
+      const fallbackRecent = directories
+        .slice(0, 8)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(entry => ({
+          name: entry.name,
+          when: "No file timestamp found"
+        }));
+      return {
+        source: "Live browser scan",
+        projectRoot: handle.name || "Selected folder",
+        capturedAt: formatMeshTimestamp(Date.now()),
+        clusters,
+        recentProjects: recentProjects.length ? recentProjects : fallbackRecent
+      };
+    }
+
+    function clusterSupportLookup(snapshot = getMeshSnapshot()) {
+      const maxCount = Math.max(1, ...snapshot.clusters.map(item => Number(item.count) || 0));
+      return Object.fromEntries(
+        snapshot.clusters.map(item => [item.title, +(38 + ((62 * (Number(item.count) || 0)) / maxCount)).toFixed(2)])
+      );
+    }
+
+    function meshSupportForTheme(theme, snapshot = getMeshSnapshot()) {
+      const clusters = atlasThemeClusterMap[theme] || ["Meta-analysis core"];
+      const supportLookup = clusterSupportLookup(snapshot);
+      return +(clusters.reduce((sum, title) => sum + (supportLookup[title] || 55), 0) / clusters.length).toFixed(2);
+    }
+
+    function meshSupportForProgram(program, snapshot = getMeshSnapshot()) {
+      const themeSupports = (program.themes || []).map(theme => meshSupportForTheme(theme, snapshot));
+      if (!themeSupports.length) return 60;
+      return +(themeSupports.reduce((sum, value) => sum + value, 0) / themeSupports.length).toFixed(2);
+    }
+
+    const scenarioPresets = [
+      {
+        id: "balanced",
+        name: "Balanced frontier map",
+        description: "The default map balances pragmatic deployability with frontier relevance and local publishability.",
+        focusThemes: [],
+        weights: { priority: 0.34, publishability: 0.28, deployability: 0.16, frontier: 0.12, localLeverage: 0.10 },
+        programWeights: { base: 0.32, local: 0.24, execution: 0.18, novelty: 0.12, decision: 0.14 }
+      },
+      {
+        id: "build-now",
+        name: "Build-now default stack",
+        description: "Use this when the goal is a serious paper or package quickly, with maximum reliance on existing local assets and methods that can survive implementation reality.",
+        focusThemes: ["Small-sample inference", "Sparse data and rare events", "Bayesian bias adjustment"],
+        weights: { deployability: 0.28, publishability: 0.26, empirical: 0.12, software: 0.12, localLeverage: 0.12, dataLeverage: 0.05, focus: 0.05 },
+        programWeights: { base: 0.26, local: 0.28, execution: 0.22, decision: 0.10, focus: 0.14 }
+      },
+      {
+        id: "bias-crisis",
+        name: "Bias crisis and correction stress-test",
+        description: "This preset assumes publication bias, sparse data, or small-study fragility are the main threat and rewards methods that actively diagnose or correct distortion.",
+        focusThemes: ["Selective reporting and p-hacking", "Bayesian bias adjustment", "Sparse data and rare events", "Small-sample inference", "Dependent effects and multivariate bias correction"],
+        weights: { biasGuard: 0.28, publishability: 0.20, empirical: 0.12, localLeverage: 0.14, dataLeverage: 0.12, frontier: 0.08, focus: 0.06 },
+        programWeights: { base: 0.18, local: 0.24, execution: 0.16, novelty: 0.12, decision: 0.10, focus: 0.20 }
+      },
+      {
+        id: "decision-transport",
+        name: "Decision-targeted transportability",
+        description: "This preset rewards methods that move pooled effects toward target populations, policy estimands, or mixed trial-plus-observational decision settings.",
+        focusThemes: ["Transportability and causal evidence synthesis", "Causal evidence synthesis", "Causal interpretation and target estimands", "HTA multi-indication borrowing"],
+        weights: { decisionLift: 0.26, scope: 0.14, frontier: 0.18, publishability: 0.18, localLeverage: 0.10, dataLeverage: 0.08, focus: 0.06 },
+        programWeights: { base: 0.18, local: 0.18, execution: 0.12, novelty: 0.14, decision: 0.24, focus: 0.14 }
+      },
+      {
+        id: "network-survival",
+        name: "Network and survival frontier",
+        description: "This preset concentrates on IPD, time-to-event, network structure, and longitudinal synthesis where the local benchmark base is already unusually strong.",
+        focusThemes: ["IPD survival network meta-analysis", "Personalized treatment synthesis", "Network meta-analysis structure and evidence flow", "Longitudinal and repeated-measure NMA"],
+        weights: { decisionLift: 0.18, scope: 0.12, frontier: 0.20, publishability: 0.20, localLeverage: 0.12, dataLeverage: 0.10, focus: 0.08 },
+        programWeights: { base: 0.16, local: 0.22, execution: 0.18, novelty: 0.14, decision: 0.16, focus: 0.14 }
+      },
+      {
+        id: "moonshot",
+        name: "Moonshot methods program",
+        description: "Use this when the objective is to push the field rather than ship a safe default, accepting higher implementation risk for larger conceptual payoff.",
+        focusThemes: ["Personalized treatment synthesis", "HTA multi-indication borrowing", "Causal evidence synthesis", "Longitudinal and repeated-measure NMA"],
+        weights: { novelty: 0.24, frontier: 0.18, decisionLift: 0.18, publishability: 0.16, localLeverage: 0.10, dataLeverage: 0.08, focus: 0.06 },
+        programWeights: { base: 0.14, local: 0.14, execution: 0.10, novelty: 0.24, decision: 0.20, focus: 0.18 }
+      }
+    ];
+
+    const methodCalibrationMap = {
+      "small-k-rve-smd": {
+        simulationSupport: 88,
+        empiricalSupport: 72,
+        platformSupport: 62,
+        packageSupport: 69,
+        note: "Local 299-method engine already elevates modified Hartung-Knapp and Satterthwaite-style small-sample fixes."
+      },
+      "sparse-exact-likelihood": {
+        simulationSupport: 90,
+        empiricalSupport: 89,
+        platformSupport: 66,
+        packageSupport: 74,
+        note: "Sparse-data family has support from both the simulation framework and the empirical bias-correction dataset."
+      },
+      "p-hacking-selection": {
+        simulationSupport: 70,
+        empiricalSupport: 90,
+        platformSupport: 63,
+        packageSupport: 80,
+        note: "The expanded empirical bias dataset is a direct local stress-test bed for within-study selection modeling."
+      },
+      "robma-regression": {
+        simulationSupport: 76,
+        empiricalSupport: 92,
+        platformSupport: 68,
+        packageSupport: 91,
+        note: "RoBMA-style work is strongly aligned with the local empirical bias data and the robust metaverse package."
+      },
+      "dependent-effects-bias-correction": {
+        simulationSupport: 68,
+        empiricalSupport: 81,
+        platformSupport: 61,
+        packageSupport: 86,
+        note: "Dependent-effects bias correction is locally supported mainly through robust-package machinery rather than a full benchmark suite."
+      },
+      "target-population-ipd": {
+        simulationSupport: 72,
+        empiricalSupport: 77,
+        platformSupport: 94,
+        packageSupport: 71,
+        note: "Transportability is strongly backed by the IPD benchmark tracks and registry-oriented local projects."
+      },
+      "rct-os-integration": {
+        simulationSupport: 67,
+        empiricalSupport: 78,
+        platformSupport: 82,
+        packageSupport: 65,
+        note: "Mixed trial-plus-observational integration has strong conceptual upside but only medium local implementation maturity."
+      },
+      "ipd-cox-nma": {
+        simulationSupport: 74,
+        empiricalSupport: 80,
+        platformSupport: 97,
+        packageSupport: 70,
+        note: "The survival and transport benchmark suite gives this family the strongest local platform support in the map."
+      },
+      "sparse-two-stage-bayes-itr": {
+        simulationSupport: 58,
+        empiricalSupport: 66,
+        platformSupport: 84,
+        packageSupport: 61,
+        note: "Personalized treatment-rule synthesis benefits from the local IPD base but still lacks mature empirical replay infrastructure."
+      },
+      "nonnormal-random-effects": {
+        simulationSupport: 71,
+        empiricalSupport: 64,
+        platformSupport: 58,
+        packageSupport: 87,
+        note: "Distributional robustness is best supported locally through contamination-model and robust-estimation package components."
+      },
+      "multi-indication-hta": {
+        simulationSupport: 63,
+        empiricalSupport: 62,
+        platformSupport: 80,
+        packageSupport: 60,
+        note: "HTA borrowing has a plausible local path, but the supporting evidence is still more scaffold than fully benchmarked pipeline."
+      },
+      "causal-meta-targeting": {
+        simulationSupport: 64,
+        empiricalSupport: 74,
+        platformSupport: 79,
+        packageSupport: 68,
+        note: "Causal estimand targeting has good conceptual-local alignment through CausalSynth and registry/IPD work."
+      },
+      "bayesian-bias-workflow": {
+        simulationSupport: 72,
+        empiricalSupport: 90,
+        platformSupport: 67,
+        packageSupport: 89,
+        note: "Bias-workflow methods are strongly supported by the local empirical bias data and package ecosystem."
+      },
+      "random-walks-nma": {
+        simulationSupport: 65,
+        empiricalSupport: 67,
+        platformSupport: 86,
+        packageSupport: 64,
+        note: "Evidence-flow methods benefit from strong local NMA codebases even if empirical calibration is still modest."
+      },
+      "longitudinal-bayesian-nma": {
+        simulationSupport: 68,
+        empiricalSupport: 69,
+        platformSupport: 88,
+        packageSupport: 67,
+        note: "Repeated-measure NMA has real local infrastructure through advanced-nma-pooling and surroNMA."
+      }
+    };
+
+    const localBridgeMap = {
+      "small-k-rve-smd": {
+        localLeverage: 82,
+        dataLeverage: 86,
+        localAsset: "experimental-meta-analysis / summary_20251231_153843.json",
+        localEvidence: "Local framework already identifies modified Hartung-Knapp and related small-sample corrections among the strongest benchmark performers.",
+        nextPaper: "Benchmark small-k interval corrections against the 299-method simulation library and the 501-dataset Cochrane connector."
+      },
+      "sparse-exact-likelihood": {
+        localLeverage: 84,
+        dataLeverage: 88,
+        localAsset: "experimental-meta-analysis plus meta-epidemiology-bias-correction",
+        localEvidence: "You already have sparse-data stress infrastructure and a real empirical bias dataset where standard methods visibly miss bias signals.",
+        nextPaper: "Run an exact sparse-data bakeoff against PET, PEESE, limit meta-analysis, and regularized methods on empirical and simulated rare-event settings."
+      },
+      "p-hacking-selection": {
+        localLeverage: 79,
+        dataLeverage: 83,
+        localAsset: "meta-epidemiology-bias-correction / EXPANDED_DATASET_300_COMPARISONS.rds",
+        localEvidence: "The local meta-epidemiology project already proves that bias correction materially changes conclusions in real comparisons.",
+        nextPaper: "Model within-study selection on the expanded 300-comparison dataset and compare it to between-study publication-bias corrections."
+      },
+      "robma-regression": {
+        localLeverage: 87,
+        dataLeverage: 81,
+        localAsset: "meta-epidemiology-bias-correction plus metaverse-robust-MA",
+        localEvidence: "Local data already contain strong Egger asymmetry and real method divergence, exactly the setting where model-averaged publication-bias adjustment matters.",
+        nextPaper: "Compare RoBMA-regression, PET-PEESE, trim-and-fill, and Bayesian workflow diagnostics on the local 57-comparison study."
+      },
+      "dependent-effects-bias-correction": {
+        localLeverage: 76,
+        dataLeverage: 74,
+        localAsset: "metaverse-robust-MA / dependent-effects utilities",
+        localEvidence: "The local robust package already contains dependent-effects aggregation utilities and moderator selection machinery.",
+        nextPaper: "Stress dependent-effect bias correction under clustered outcomes and compare it with naive independent-effect pipelines."
+      },
+      "target-population-ipd": {
+        localLeverage: 85,
+        dataLeverage: 77,
+        localAsset: "IPD-Meta-Pro benchmarks plus registry/IPD projects on C:",
+        localEvidence: "Local IPD tooling and transport benchmark tracks provide an implementation base rather than a blank slate.",
+        nextPaper: "Build a target-population transportability workflow that outputs both pooled and transported treatment effects with sensitivity overlays."
+      },
+      "rct-os-integration": {
+        localLeverage: 80,
+        dataLeverage: 78,
+        localAsset: "registry_first_rct_meta and meta-epidemiology-bias-correction",
+        localEvidence: "You already have both empirical discordance data and registry/RCT-oriented projects to evaluate integration strategies.",
+        nextPaper: "Test two-parameter sensitivity integration on real registry-plus-trial case studies and compare transported versus pooled conclusions."
+      },
+      "ipd-cox-nma": {
+        localLeverage: 88,
+        dataLeverage: 80,
+        localAsset: "IPD-Meta-Pro benchmarks and advanced-nma-pooling",
+        localEvidence: "The local survival benchmark suite already reports parity for centered, piecewise, and RMST tracks, which is a strong base for survival NMA extensions.",
+        nextPaper: "Extend the local benchmark engine to one-stage Cox NMA with effect-modification diagnostics and treatment ranking under covariate shift."
+      },
+      "sparse-two-stage-bayes-itr": {
+        localLeverage: 72,
+        dataLeverage: 70,
+        localAsset: "IPD-Meta-Pro plus WorldIPD projects",
+        localEvidence: "Local IPD infrastructure makes individualized treatment-rule synthesis plausible, but the data demands remain high.",
+        nextPaper: "Prototype privacy-aware individualized treatment-rule synthesis on multisite survival or continuous-outcome benchmarks."
+      },
+      "nonnormal-random-effects": {
+        localLeverage: 83,
+        dataLeverage: 76,
+        localAsset: "metaverse-robust-MA",
+        localEvidence: "The local robust package already contains contamination models and robust estimators that are natural launchpads for non-normal random-effects work.",
+        nextPaper: "Benchmark mixture, slash, and Box-Cox contamination models against classic normal random effects on the local simulation engine."
+      },
+      "multi-indication-hta": {
+        localLeverage: 75,
+        dataLeverage: 73,
+        localAsset: "HTA-oman and advanced-nma-pooling",
+        localEvidence: "Local HTA and NMA projects create a plausible deployment path for cross-indication borrowing studies.",
+        nextPaper: "Build a multi-indication HTA simulator with decision loss outputs rather than only treatment-effect error metrics."
+      },
+      "causal-meta-targeting": {
+        localLeverage: 82,
+        dataLeverage: 75,
+        localAsset: "CausalSynth and registry/IPD projects",
+        localEvidence: "Local causal and registry-focused projects make target estimands and transportability more than a theoretical add-on.",
+        nextPaper: "Turn causal estimand declarations into a reproducible pre-analysis layer for meta-analysis protocols and software."
+      },
+      "bayesian-bias-workflow": {
+        localLeverage: 84,
+        dataLeverage: 78,
+        localAsset: "meta-epidemiology-bias-correction plus metaverse-robust-MA",
+        localEvidence: "The local empirical dataset is ideal for demonstrating how workflow discipline changes conclusions under bias adjustment.",
+        nextPaper: "Create a full workflow benchmark with prior perturbation, posterior predictive checks, and model-space reporting."
+      },
+      "random-walks-nma": {
+        localLeverage: 80,
+        dataLeverage: 72,
+        localAsset: "advanced-nma-pooling and repo300-ENMA-SNMA",
+        localEvidence: "Local NMA codebases give an immediate platform for testing evidence-flow diagnostics and contribution-path reporting.",
+        nextPaper: "Compare shortest-path and random-walk contribution schemes on real and simulated networks with disconnected evidence flow."
+      },
+      "longitudinal-bayesian-nma": {
+        localLeverage: 81,
+        dataLeverage: 74,
+        localAsset: "advanced-nma-pooling, repo300-ENMA-SNMA, surroNMA",
+        localEvidence: "You already have multiple NMA-oriented projects that can support repeated-measure and time-course experimentation.",
+        nextPaper: "Build a repeated-measure NMA benchmark with Gaussian random walks, drift terms, and time-varying ranking outputs."
+      }
+    };
+
+    function scoreMethod(method) {
+      const bridge = localBridgeMap[method.id] || {};
+      const deployability = +(0.45 * method.software + 0.35 * method.empirical + 0.20 * method.scope).toFixed(2);
+      const frontier = +(0.45 * method.novelty + 0.35 * method.biasGuard + 0.20 * method.decisionLift).toFixed(2);
+      const priority = +(0.55 * frontier + 0.45 * deployability).toFixed(2);
+      const localLeverage = bridge.localLeverage ?? 50;
+      const dataLeverage = bridge.dataLeverage ?? 50;
+      const publishability = +(0.35 * frontier + 0.35 * localLeverage + 0.30 * dataLeverage).toFixed(2);
+      let band = "Speculative frontier";
+      let bandClass = "speculative";
+      if (deployability >= bandThresholds.deployable) {
+        band = "Deployable now";
+        bandClass = "deployable";
+      } else if (deployability >= bandThresholds.emerging) {
+        band = "High-promise emerging";
+        bandClass = "emerging";
+      } else if (deployability >= bandThresholds.research) {
+        band = "Research-stage";
+        bandClass = "research";
+      }
+      return { ...method, ...bridge, deployability, frontier, priority, publishability, band, bandClass };
+    }
+
+    const scoredMethods = methods.map(scoreMethod);
+    const baselineRankLookup = Object.fromEntries(
+      [...scoredMethods]
+        .sort((a, b) => b.priority - a.priority || b.deployability - a.deployability || a.id.localeCompare(b.id))
+        .map((item, index) => [item.id, index + 1])
+    );
+
+    function bandCounts(items) {
+      return items.reduce((acc, item) => {
+        acc[item.band] = (acc[item.band] || 0) + 1;
+        return acc;
+      }, {});
+    }
+
+    function getScenarioPreset() {
+      const selected = document.getElementById("scenarioSelect")?.value || "moonshot";
+      return scenarioPresets.find(item => item.id === selected) || scenarioPresets[0];
+    }
+
+    function yearSignal(year) {
+      return 60 + ((year - 2024) * 10);
+    }
+
+    function focusScore(theme, focusThemes) {
+      if (!focusThemes.length) return 75;
+      return focusThemes.includes(theme) ? 100 : 55;
+    }
+
+    function weightedTotal(values, weights) {
+      return +Object.entries(weights)
+        .reduce((sum, [key, weight]) => sum + ((values[key] ?? 0) * weight), 0)
+        .toFixed(2);
+    }
+
+    function methodScenarioValues(item, preset) {
+      return {
+        priority: item.priority,
+        deployability: item.deployability,
+        frontier: item.frontier,
+        publishability: item.publishability,
+        software: item.software,
+        empirical: item.empirical,
+        scope: item.scope,
+        novelty: item.novelty,
+        biasGuard: item.biasGuard,
+        decisionLift: item.decisionLift,
+        localLeverage: item.localLeverage ?? 50,
+        dataLeverage: item.dataLeverage ?? 50,
+        year: yearSignal(item.year),
+        focus: focusScore(item.theme, preset.focusThemes)
+      };
+    }
+
+    function programScenarioValues(program, preset) {
+      return {
+        base: program.score,
+        local: program.localStrength ?? 75,
+        execution: program.execution ?? 70,
+        novelty: program.novelty ?? 70,
+        decision: program.decision ?? 70,
+        focus: (program.themes || []).some(theme => preset.focusThemes.includes(theme)) || !preset.focusThemes.length ? 100 : 55
+      };
+    }
+
+    function programScenarioFit(program, preset) {
+      return weightedTotal(programScenarioValues(program, preset), preset.programWeights);
+    }
+
+    function methodsForScenario(preset = getScenarioPreset()) {
+      return scoredMethods.map(item => ({ ...item, scenarioFit: weightedTotal(methodScenarioValues(item, preset), preset.weights) }));
+    }
+
+    function currentScenarioOrderedMethods() {
+      return [...methodsForScenario()].sort((a, b) =>
+        b.scenarioFit - a.scenarioFit ||
+        b.publishability - a.publishability ||
+        b.priority - a.priority ||
+        a.id.localeCompare(b.id)
+      );
+    }
+
+    function rankedPrograms(preset = getScenarioPreset()) {
+      return programs
+        .map(program => ({ ...program, scenarioFit: programScenarioFit(program, preset) }))
+        .sort((a, b) => b.scenarioFit - a.scenarioFit || b.score - a.score || a.title.localeCompare(b.title));
+    }
+
+    function sortedMethods() {
+      const sortBy = document.getElementById("sortSelect").value;
+      const bandFilter = document.getElementById("bandSelect").value;
+      return methodsForScenario()
+        .filter(item => bandFilter === "all" ? true : item.band === bandFilter)
+        .sort((a, b) => {
+          if (sortBy === "upside") return modeledMethodLookup[b.id].upsideScore - modeledMethodLookup[a.id].upsideScore || modeledMethodLookup[b.id].promiseScore - modeledMethodLookup[a.id].promiseScore || a.id.localeCompare(b.id);
+          if (sortBy === "promise") return modeledMethodLookup[b.id].posteriorPromise - modeledMethodLookup[a.id].posteriorPromise || modeledMethodLookup[b.id].top3Probability - modeledMethodLookup[a.id].top3Probability || a.id.localeCompare(b.id);
+          if (sortBy === "scenario") return b.scenarioFit - a.scenarioFit || b.publishability - a.publishability || a.id.localeCompare(b.id);
+          if (sortBy === "deployability") return b.deployability - a.deployability || b.scenarioFit - a.scenarioFit || a.id.localeCompare(b.id);
+          if (sortBy === "frontier") return b.frontier - a.frontier || b.scenarioFit - a.scenarioFit || a.id.localeCompare(b.id);
+          if (sortBy === "year") return b.year - a.year || b.scenarioFit - a.scenarioFit || a.id.localeCompare(b.id);
+          return b.priority - a.priority || b.scenarioFit - a.scenarioFit || a.id.localeCompare(b.id);
+        });
+    }
+
+    function updateMetrics() {
+      const counts = bandCounts(scoredMethods);
+      document.getElementById("metricTotal").textContent = scoredMethods.length;
+      document.getElementById("metricDeployable").textContent = counts["Deployable now"] || 0;
+      document.getElementById("metricEmerging").textContent = counts["High-promise emerging"] || 0;
+      document.getElementById("metricExperimental").textContent =
+        (counts["Research-stage"] || 0) + (counts["Speculative frontier"] || 0);
+    }
+
+    function biggestMover(items) {
+      return [...items]
+        .map((item, index) => ({
+          ...item,
+          currentRank: index + 1,
+          rankShift: (baselineRankLookup[item.id] || index + 1) - (index + 1)
+        }))
+        .sort((a, b) => Math.abs(b.rankShift) - Math.abs(a.rankShift) || b.scenarioFit - a.scenarioFit)[0];
+    }
+
+    function themeSummaries(items) {
+      const bucket = new Map();
+      items.forEach(item => {
+        if (!bucket.has(item.theme)) {
+          bucket.set(item.theme, { theme: item.theme, totalScenario: 0, totalPublishability: 0, count: 0, best: item });
+        }
+        const entry = bucket.get(item.theme);
+        entry.totalScenario += item.scenarioFit;
+        entry.totalPublishability += item.publishability;
+        entry.count += 1;
+        if (item.scenarioFit > entry.best.scenarioFit) entry.best = item;
+      });
+      return [...bucket.values()]
+        .map(entry => ({
+          theme: entry.theme,
+          avgScenarioFit: +(entry.totalScenario / entry.count).toFixed(2),
+          avgPublishability: +(entry.totalPublishability / entry.count).toFixed(2),
+          count: entry.count,
+          best: entry.best
+        }))
+        .sort((a, b) => b.avgScenarioFit - a.avgScenarioFit || b.avgPublishability - a.avgPublishability || a.theme.localeCompare(b.theme));
+    }
+
+    function createSeededRng(seed = 20260327) {
+      let state = seed >>> 0;
+      return function next() {
+        state = (1664525 * state + 1013904223) >>> 0;
+        return state / 4294967296;
+      };
+    }
+
+    function jitterWeights(weights, rng, amplitude = 0.32) {
+      const perturbed = Object.entries(weights).map(([key, value]) => [key, Math.max(0.0001, value * (1 + (((rng() * 2) - 1) * amplitude)))]);
+      const total = perturbed.reduce((sum, [, value]) => sum + value, 0);
+      return Object.fromEntries(perturbed.map(([key, value]) => [key, value / total]));
+    }
+
+    function quantile(values, p) {
+      const ordered = [...values].sort((a, b) => a - b);
+      if (!ordered.length) return 0;
+      const index = (ordered.length - 1) * p;
+      const lower = Math.floor(index);
+      const upper = Math.ceil(index);
+      if (lower === upper) return +ordered[lower].toFixed(2);
+      return +(ordered[lower] + ((ordered[upper] - ordered[lower]) * (index - lower))).toFixed(2);
+    }
+
+    function combinations(items, size) {
+      const results = [];
+      function walk(start, combo) {
+        if (combo.length === size) {
+          results.push(combo);
+          return;
+        }
+        for (let index = start; index <= items.length - (size - combo.length); index += 1) {
+          walk(index + 1, [...combo, items[index]]);
+        }
+      }
+      walk(0, []);
+      return results;
+    }
+
+    function dominatesPoint(a, b) {
+      const weaklyBetter =
+        a.posteriorPromise >= b.posteriorPromise &&
+        a.upsideScore >= b.upsideScore &&
+        a.stability >= b.stability &&
+        a.localCalibration >= b.localCalibration &&
+        a.executionRisk <= b.executionRisk;
+      const strictlyBetter =
+        a.posteriorPromise > b.posteriorPromise ||
+        a.upsideScore > b.upsideScore ||
+        a.stability > b.stability ||
+        a.localCalibration > b.localCalibration ||
+        a.executionRisk < b.executionRisk;
+      return weaklyBetter && strictlyBetter;
+    }
+
+    function buildModeledMethods() {
+      const scenarioRuns = scenarioPresets.map(preset => ({
+        preset,
+        ordered: methodsForScenario(preset).sort((a, b) =>
+          b.scenarioFit - a.scenarioFit ||
+          b.publishability - a.publishability ||
+          b.priority - a.priority ||
+          a.id.localeCompare(b.id)
+        )
+      }));
+      const rankMaps = scenarioRuns.map(run => Object.fromEntries(run.ordered.map((item, index) => [item.id, index + 1])));
+      const baseItems = scoredMethods
+        .map(item => {
+          const scenarioScores = scenarioPresets.map(preset => weightedTotal(methodScenarioValues(item, preset), preset.weights));
+          const meanScenarioFit = +(scenarioScores.reduce((sum, value) => sum + value, 0) / scenarioScores.length).toFixed(2);
+          const worstScenarioFit = +Math.min(...scenarioScores).toFixed(2);
+          const bestScenarioFit = +Math.max(...scenarioScores).toFixed(2);
+          const variance = scenarioScores.reduce((sum, value) => sum + Math.pow(value - meanScenarioFit, 2), 0) / scenarioScores.length;
+          const sdScenarioFit = +Math.sqrt(variance).toFixed(2);
+          const stability = +(100 - Math.min(35, sdScenarioFit * 4)).toFixed(2);
+          const top3Count = rankMaps.reduce((sum, map) => sum + ((map[item.id] || 99) <= 3 ? 1 : 0), 0);
+          const top5Count = rankMaps.reduce((sum, map) => sum + ((map[item.id] || 99) <= 5 ? 1 : 0), 0);
+          const dominance = +((top5Count / scenarioPresets.length) * 100).toFixed(2);
+          const calibration = methodCalibrationMap[item.id] || {
+            simulationSupport: 65,
+            empiricalSupport: 65,
+            platformSupport: 65,
+            packageSupport: 65,
+            note: "No explicit local calibration note."
+          };
+          const localCalibration = +(0.34 * calibration.simulationSupport + 0.30 * calibration.empiricalSupport + 0.22 * calibration.platformSupport + 0.14 * calibration.packageSupport).toFixed(2);
+          const calibrationSpread = Math.max(
+            calibration.simulationSupport,
+            calibration.empiricalSupport,
+            calibration.platformSupport,
+            calibration.packageSupport
+          ) - Math.min(
+            calibration.simulationSupport,
+            calibration.empiricalSupport,
+            calibration.platformSupport,
+            calibration.packageSupport
+          );
+          const calibrationConfidence = +(100 - Math.min(32, calibrationSpread * 0.55)).toFixed(2);
+          const evidenceStrength = +(0.45 * item.empirical + 0.20 * (item.localLeverage ?? 50) + 0.20 * (item.dataLeverage ?? 50) + 0.15 * yearSignal(item.year)).toFixed(2);
+          const executionRisk = +(100 - (0.60 * item.deployability + 0.25 * item.software + 0.15 * item.empirical)).toFixed(2);
+          const promiseScore = +(0.30 * meanScenarioFit + 0.18 * worstScenarioFit + 0.18 * stability + 0.18 * item.publishability + 0.16 * evidenceStrength).toFixed(2);
+          const upsideScore = +(0.38 * item.novelty + 0.24 * item.decisionLift + 0.20 * bestScenarioFit + 0.18 * item.frontier).toFixed(2);
+          return {
+            ...item,
+            meanScenarioFit,
+            worstScenarioFit,
+            bestScenarioFit,
+            sdScenarioFit,
+            stability,
+            top3Count,
+            top5Count,
+            dominance,
+            localCalibration,
+            calibrationConfidence,
+            calibrationNote: calibration.note,
+            evidenceStrength,
+            executionRisk,
+            promiseScore,
+            upsideScore
+          };
+        })
+        .sort((a, b) => b.promiseScore - a.promiseScore || b.stability - a.stability || a.id.localeCompare(b.id));
+
+      const rng = createSeededRng(20260327);
+      const drawCount = 600;
+      const posteriorDraws = Object.fromEntries(baseItems.map(item => [item.id, []]));
+      const top1Counts = Object.fromEntries(baseItems.map(item => [item.id, 0]));
+      const top3Counts = Object.fromEntries(baseItems.map(item => [item.id, 0]));
+      const top5Counts = Object.fromEntries(baseItems.map(item => [item.id, 0]));
+
+      for (let draw = 0; draw < drawCount; draw += 1) {
+        const drawWeights = scenarioPresets.map(preset => ({ preset, weights: jitterWeights(preset.weights, rng) }));
+        const drawRows = baseItems.map(item => {
+          const drawScenarioScores = drawWeights.map(({ preset, weights }) => weightedTotal(methodScenarioValues(item, preset), weights));
+          const drawMean = drawScenarioScores.reduce((sum, value) => sum + value, 0) / drawScenarioScores.length;
+          const drawWorst = Math.min(...drawScenarioScores);
+          const drawVariance = drawScenarioScores.reduce((sum, value) => sum + Math.pow(value - drawMean, 2), 0) / drawScenarioScores.length;
+          const drawStability = 100 - Math.min(38, Math.sqrt(drawVariance) * 4.1);
+          const calibrationNoise = (((rng() * 2) - 1) * (100 - item.calibrationConfidence) * 0.14);
+          const evidenceNoise = (((rng() * 2) - 1) * 2.4);
+          const posteriorPromise = +(
+            0.26 * drawMean +
+            0.16 * drawWorst +
+            0.16 * drawStability +
+            0.14 * item.publishability +
+            0.14 * (item.evidenceStrength + evidenceNoise) +
+            0.14 * (item.localCalibration + calibrationNoise)
+          ).toFixed(2);
+          return { id: item.id, posteriorPromise };
+        }).sort((a, b) => b.posteriorPromise - a.posteriorPromise || a.id.localeCompare(b.id));
+
+        drawRows.forEach((row, index) => {
+          posteriorDraws[row.id].push(row.posteriorPromise);
+          if (index === 0) top1Counts[row.id] += 1;
+          if (index < 3) top3Counts[row.id] += 1;
+          if (index < 5) top5Counts[row.id] += 1;
+        });
+      }
+
+      const withPosterior = baseItems.map(item => {
+        const draws = posteriorDraws[item.id];
+        const posteriorPromise = +(draws.reduce((sum, value) => sum + value, 0) / draws.length).toFixed(2);
+        const posteriorLow = quantile(draws, 0.1);
+        const posteriorHigh = quantile(draws, 0.9);
+        const uncertaintyWidth = +(posteriorHigh - posteriorLow).toFixed(2);
+        const winProbability = +((top1Counts[item.id] / drawCount) * 100).toFixed(2);
+        const top3Probability = +((top3Counts[item.id] / drawCount) * 100).toFixed(2);
+        const top5Probability = +((top5Counts[item.id] / drawCount) * 100).toFixed(2);
+        return {
+          ...item,
+          posteriorPromise,
+          posteriorLow,
+          posteriorHigh,
+          uncertaintyWidth,
+          winProbability,
+          top3Probability,
+          top5Probability
+        };
+      });
+
+      const paretoIds = new Set(
+        withPosterior
+          .filter(candidate => !withPosterior.some(other => other.id !== candidate.id && dominatesPoint(other, candidate)))
+          .map(item => item.id)
+      );
+
+      return withPosterior
+        .map(item => {
+          const paretoEfficient = paretoIds.has(item.id);
+          let verdict = "Scenario-sensitive";
+          if (item.posteriorPromise >= 80 && item.top3Probability >= 60 && item.executionRisk <= 34) verdict = "Compelling build";
+          else if (paretoEfficient && item.upsideScore >= 84 && item.posteriorPromise >= 72) verdict = "Pareto moonshot";
+          else if (item.posteriorPromise >= 78 && item.top3Probability >= 25) verdict = "Promising";
+          else if (item.upsideScore >= 84 && item.posteriorPromise >= 70) verdict = "High-upside moonshot";
+          else if (item.stability >= 88 && item.executionRisk <= 30) verdict = "Stable specialist";
+          return { ...item, paretoEfficient, verdict };
+        })
+        .sort((a, b) => b.promiseScore - a.promiseScore || b.stability - a.stability || a.id.localeCompare(b.id));
+    }
+
+    const modeledMethods = buildModeledMethods();
+    const modeledMethodLookup = Object.fromEntries(modeledMethods.map(item => [item.id, item]));
+    const posteriorOrderedMethods = [...modeledMethods].sort((a, b) =>
+      b.posteriorPromise - a.posteriorPromise ||
+      b.top3Probability - a.top3Probability ||
+      b.upsideScore - a.upsideScore ||
+      a.id.localeCompare(b.id)
+    );
+
+    function buildModeledPrograms() {
+      const rng = createSeededRng(20260328);
+      const drawCount = 500;
+      const basePrograms = programs.map(program => {
+        const scenarioScores = scenarioPresets.map(preset => programScenarioFit(program, preset));
+        const meanScenarioFit = +(scenarioScores.reduce((sum, value) => sum + value, 0) / scenarioScores.length).toFixed(2);
+        const worstScenarioFit = +Math.min(...scenarioScores).toFixed(2);
+        const bestScenarioFit = +Math.max(...scenarioScores).toFixed(2);
+        const variance = scenarioScores.reduce((sum, value) => sum + Math.pow(value - meanScenarioFit, 2), 0) / scenarioScores.length;
+        const stability = +(100 - Math.min(35, Math.sqrt(variance) * 4.2)).toFixed(2);
+        const upside = +(0.35 * program.novelty + 0.27 * program.decision + 0.20 * bestScenarioFit + 0.18 * program.score).toFixed(2);
+        const executionRisk = +(100 - (0.55 * program.execution + 0.30 * program.localStrength + 0.15 * program.score)).toFixed(2);
+        return { ...program, scenarioScores, meanScenarioFit, worstScenarioFit, bestScenarioFit, stability, upside, executionRisk };
+      });
+
+      const posteriorDraws = Object.fromEntries(basePrograms.map(program => [program.title, []]));
+      const top3Counts = Object.fromEntries(basePrograms.map(program => [program.title, 0]));
+
+      for (let draw = 0; draw < drawCount; draw += 1) {
+        const drawWeights = scenarioPresets.map(preset => ({ preset, weights: jitterWeights(preset.programWeights, rng, 0.28) }));
+        const drawPrograms = basePrograms.map(program => {
+          const drawScenarioScores = drawWeights.map(({ preset, weights }) => weightedTotal(programScenarioValues(program, preset), weights));
+          const drawMean = drawScenarioScores.reduce((sum, value) => sum + value, 0) / drawScenarioScores.length;
+          const drawWorst = Math.min(...drawScenarioScores);
+          const drawVariance = drawScenarioScores.reduce((sum, value) => sum + Math.pow(value - drawMean, 2), 0) / drawScenarioScores.length;
+          const drawStability = 100 - Math.min(38, Math.sqrt(drawVariance) * 4.0);
+          const drawPosterior = +(0.34 * drawMean + 0.18 * drawWorst + 0.18 * drawStability + 0.16 * program.localStrength + 0.14 * program.execution).toFixed(2);
+          return { title: program.title, drawPosterior };
+        }).sort((a, b) => b.drawPosterior - a.drawPosterior || a.title.localeCompare(b.title));
+
+        drawPrograms.forEach((program, index) => {
+          posteriorDraws[program.title].push(program.drawPosterior);
+          if (index < 3) top3Counts[program.title] += 1;
+        });
+      }
+
+      return basePrograms
+        .map(program => {
+          const draws = posteriorDraws[program.title];
+          const posteriorPromise = +(draws.reduce((sum, value) => sum + value, 0) / draws.length).toFixed(2);
+          const posteriorLow = quantile(draws, 0.1);
+          const posteriorHigh = quantile(draws, 0.9);
+          const top3Probability = +((top3Counts[program.title] / drawCount) * 100).toFixed(2);
+          let verdict = "Support program";
+          if (posteriorPromise >= 86 && top3Probability >= 60) verdict = "Primary program";
+          else if (program.upside >= 88 && posteriorPromise >= 82) verdict = "Moonshot program";
+          else if (posteriorPromise >= 82) verdict = "Promising program";
+          return { ...program, posteriorPromise, posteriorLow, posteriorHigh, top3Probability, verdict };
+        })
+        .sort((a, b) => b.posteriorPromise - a.posteriorPromise || b.top3Probability - a.top3Probability || a.title.localeCompare(b.title));
+    }
+
+    const modeledPrograms = buildModeledPrograms();
+    const modeledProgramLookup = Object.fromEntries(modeledPrograms.map(program => [program.title, program]));
+
+    function buildMethodBundles(preset = getScenarioPreset()) {
+      const snapshot = getMeshSnapshot();
+      const candidates = methodsForScenario(preset)
+        .map(item => {
+          const modeled = modeledMethodLookup[item.id];
+          const meshSupport = meshSupportForTheme(item.theme, snapshot);
+          const effectiveLocal = +(0.76 * modeled.localCalibration + 0.24 * meshSupport).toFixed(2);
+          return { ...item, ...modeled, meshSupport, effectiveLocal };
+        })
+        .sort((a, b) =>
+          ((0.55 * b.scenarioFit) + (0.45 * b.posteriorPromise)) -
+          ((0.55 * a.scenarioFit) + (0.45 * a.posteriorPromise)) ||
+          b.upsideScore - a.upsideScore ||
+          a.id.localeCompare(b.id)
+        )
+        .slice(0, 8);
+
+      return combinations(candidates, 3)
+        .map(bundle => {
+          const meanPosterior = +(bundle.reduce((sum, item) => sum + item.posteriorPromise, 0) / bundle.length).toFixed(2);
+          const meanScenarioFit = +(bundle.reduce((sum, item) => sum + item.scenarioFit, 0) / bundle.length).toFixed(2);
+          const meanUpside = +(bundle.reduce((sum, item) => sum + item.upsideScore, 0) / bundle.length).toFixed(2);
+          const meanStability = +(bundle.reduce((sum, item) => sum + item.stability, 0) / bundle.length).toFixed(2);
+          const meanRisk = +(bundle.reduce((sum, item) => sum + item.executionRisk, 0) / bundle.length).toFixed(2);
+          const meanLocal = +(bundle.reduce((sum, item) => sum + item.effectiveLocal, 0) / bundle.length).toFixed(2);
+          const themeCount = new Set(bundle.map(item => item.theme)).size;
+          const verdictCount = new Set(bundle.map(item => item.verdict)).size;
+          const robustCount = bundle.filter(item => ["Compelling build", "Promising", "Stable specialist"].includes(item.verdict)).length;
+          const moonshotCount = bundle.filter(item => item.verdict.toLowerCase().includes("moonshot")).length;
+          const coverage = Math.min(100, 56 + (themeCount * 11) + (verdictCount * 6) + (robustCount * 4) + (moonshotCount * 7));
+          const bundleScore = +(0.28 * meanPosterior + 0.20 * meanScenarioFit + 0.16 * meanUpside + 0.14 * meanLocal + 0.12 * (100 - meanRisk) + 0.10 * coverage).toFixed(2);
+          const hedgeStrength = +(0.34 * meanPosterior + 0.20 * meanStability + 0.18 * meanLocal + 0.14 * (100 - meanRisk) + 0.14 * coverage).toFixed(2);
+          let label = "Balanced frontier stack";
+          if (robustCount >= 2 && moonshotCount >= 1) label = "Hedged moonshot stack";
+          else if (meanRisk <= 31 && meanPosterior >= 79) label = "Primary build stack";
+          else if (meanUpside >= 83) label = "Field-reset stack";
+          const leadMoonshot = bundle.find(item => item.verdict.toLowerCase().includes("moonshot"));
+          const claim = leadMoonshot
+            ? `Use ${leadMoonshot.name} as the stretch component while the other methods stabilize estimation and diagnostics.`
+            : `A balanced stack for a defensible methods paper or package release under ${preset.name}.`;
+          return {
+            label,
+            names: bundle.map(item => item.name).join(" + "),
+            bundle,
+            meanPosterior,
+            meanScenarioFit,
+            meanUpside,
+            meanStability,
+            meanRisk,
+            meanLocal,
+            coverage,
+            bundleScore,
+            hedgeStrength,
+            claim
+          };
+        })
+        .sort((a, b) => b.bundleScore - a.bundleScore || b.hedgeStrength - a.hedgeStrength || a.meanRisk - b.meanRisk)
+        .slice(0, 5);
+    }
+
+    function buildProgramChains(preset = getScenarioPreset()) {
+      const candidates = programs
+        .map(program => ({ ...program, ...modeledProgramLookup[program.title], scenarioFit: programScenarioFit(program, preset) }))
+        .sort((a, b) =>
+          ((0.55 * b.scenarioFit) + (0.45 * b.posteriorPromise)) -
+          ((0.55 * a.scenarioFit) + (0.45 * a.posteriorPromise)) ||
+          b.upside - a.upside ||
+          a.title.localeCompare(b.title)
+        )
+        .slice(0, 5);
+
+      return combinations(candidates, 3)
+        .map(chain => {
+          const meanPosterior = +(chain.reduce((sum, item) => sum + item.posteriorPromise, 0) / chain.length).toFixed(2);
+          const meanScenarioFit = +(chain.reduce((sum, item) => sum + item.scenarioFit, 0) / chain.length).toFixed(2);
+          const meanUpside = +(chain.reduce((sum, item) => sum + item.upside, 0) / chain.length).toFixed(2);
+          const meanStability = +(chain.reduce((sum, item) => sum + item.stability, 0) / chain.length).toFixed(2);
+          const meanRisk = +(chain.reduce((sum, item) => sum + item.executionRisk, 0) / chain.length).toFixed(2);
+          const themeCoverageCount = new Set(chain.flatMap(item => item.themes)).size;
+          const themeCoverage = Math.min(100, 48 + (themeCoverageCount * 4.5));
+          const kickoff = [...chain].sort((a, b) => b.execution - a.execution || b.localStrength - a.localStrength || a.title.localeCompare(b.title))[0];
+          const middlePool = chain.filter(item => item.title !== kickoff.title);
+          const centerpiece = [...middlePool].sort((a, b) => b.posteriorPromise - a.posteriorPromise || b.top3Probability - a.top3Probability || a.title.localeCompare(b.title))[0];
+          const finale = middlePool.filter(item => item.title !== centerpiece.title)[0];
+          const sequence = [kickoff, centerpiece, finale];
+          const titles = sequence.map(item => item.title);
+          let label = "Primary execution chain";
+          if (titles.some(title => title.includes("Benchmark")) && titles.some(title => title.includes("Pipeline"))) label = "Benchmark to translation chain";
+          else if (titles.some(title => title.includes("Cartography")) && titles.some(title => title.includes("Stack"))) label = "Bias-to-default chain";
+          else if (meanUpside >= 89) label = "Field-reset chain";
+          const chainScore = +(0.30 * meanPosterior + 0.18 * meanScenarioFit + 0.16 * meanUpside + 0.14 * meanStability + 0.12 * (100 - meanRisk) + 0.10 * themeCoverage).toFixed(2);
+          return {
+            label,
+            chain,
+            sequence,
+            sequenceTitles: titles.join(" -> "),
+            meanPosterior,
+            meanScenarioFit,
+            meanUpside,
+            meanStability,
+            meanRisk,
+            themeCoverage,
+            chainScore,
+            output: sequence[sequence.length - 1].output
+          };
+        })
+        .sort((a, b) => b.chainScore - a.chainScore || b.meanPosterior - a.meanPosterior || a.meanRisk - b.meanRisk)
+        .slice(0, 4);
+    }
+
+    function buildGapRadar(preset = getScenarioPreset()) {
+      const snapshot = getMeshSnapshot();
+      const items = methodsForScenario(preset).map(item => {
+        const modeled = modeledMethodLookup[item.id];
+        const meshSupport = meshSupportForTheme(item.theme, snapshot);
+        const effectiveLocal = +(0.76 * modeled.localCalibration + 0.24 * meshSupport).toFixed(2);
+        return { ...item, ...modeled, meshSupport, effectiveLocal };
+      });
+      const themeGroups = new Map();
+      items.forEach(item => {
+        if (!themeGroups.has(item.theme)) {
+          themeGroups.set(item.theme, { theme: item.theme, items: [] });
+        }
+        themeGroups.get(item.theme).items.push(item);
+      });
+
+      return [...themeGroups.values()]
+        .map(entry => {
+          const count = entry.items.length;
+          const avgScenarioFit = +(entry.items.reduce((sum, item) => sum + item.scenarioFit, 0) / count).toFixed(2);
+          const avgPosterior = +(entry.items.reduce((sum, item) => sum + item.posteriorPromise, 0) / count).toFixed(2);
+          const avgUpside = +(entry.items.reduce((sum, item) => sum + item.upsideScore, 0) / count).toFixed(2);
+          const avgFrontier = +(entry.items.reduce((sum, item) => sum + item.frontier, 0) / count).toFixed(2);
+          const avgLocal = +(entry.items.reduce((sum, item) => sum + item.effectiveLocal, 0) / count).toFixed(2);
+          const avgRisk = +(entry.items.reduce((sum, item) => sum + item.executionRisk, 0) / count).toFixed(2);
+          const scarcity = Math.max(40, 100 - ((count - 1) * 18));
+          const gapPressure = +(0.24 * avgUpside + 0.20 * avgScenarioFit + 0.18 * avgFrontier + 0.16 * (100 - avgLocal) + 0.12 * avgRisk + 0.10 * scarcity).toFixed(2);
+          const lead = [...entry.items].sort((a, b) => b.upsideScore - a.upsideScore || b.posteriorPromise - a.posteriorPromise || a.id.localeCompare(b.id))[0];
+          let action = "Needs benchmark plus implementation hedge.";
+          if (avgLocal < 76) action = "Needs a local software bridge before benchmarking.";
+          else if (avgRisk > 40) action = "Needs failure-cartography work before claiming default use.";
+          else if (avgUpside >= 84) action = "Needs a moonshot pilot with a conservative comparator stack.";
+          else if (avgPosterior >= 78) action = "Ready for a comparative benchmark paper.";
+          return {
+            theme: entry.theme,
+            count,
+            avgScenarioFit,
+            avgPosterior,
+            avgUpside,
+            avgLocal,
+            avgRisk,
+            gapPressure,
+            lead,
+            action
+          };
+        })
+        .sort((a, b) => b.gapPressure - a.gapPressure || b.avgUpside - a.avgUpside || a.theme.localeCompare(b.theme))
+        .slice(0, 5);
+    }
+
+    function getCustomStrategyWeights() {
+      const raw = {
+        upside: Number(document.getElementById("customUpsideRange")?.value || 70),
+        posterior: Number(document.getElementById("customPosteriorRange")?.value || 82),
+        local: Number(document.getElementById("customLocalRange")?.value || 76),
+        stability: Number(document.getElementById("customStabilityRange")?.value || 68),
+        safety: Number(document.getElementById("customSafetyRange")?.value || 54)
+      };
+      const total = Object.values(raw).reduce((sum, value) => sum + value, 0) || 1;
+      return {
+        raw,
+        normalized: Object.fromEntries(Object.entries(raw).map(([key, value]) => [key, value / total]))
+      };
+    }
+
+    function buildCustomStrategyRankingFromRaw(raw, preset = getScenarioPreset(), snapshot = getMeshSnapshot()) {
+      const total = Object.values(raw).reduce((sum, value) => sum + value, 0) || 1;
+      const normalized = Object.fromEntries(Object.entries(raw).map(([key, value]) => [key, value / total]));
+      const methods = methodsForScenario(preset)
+        .map(item => {
+          const modeled = modeledMethodLookup[item.id];
+          const meshSupport = meshSupportForTheme(item.theme, snapshot);
+          const effectiveLocal = +(0.76 * modeled.localCalibration + 0.24 * meshSupport).toFixed(2);
+          const tunedScore = +(
+            normalized.upside * modeled.upsideScore +
+            normalized.posterior * ((0.72 * modeled.posteriorPromise) + (0.28 * item.scenarioFit)) +
+            normalized.local * effectiveLocal +
+            normalized.stability * modeled.stability +
+            normalized.safety * (100 - modeled.executionRisk)
+          ).toFixed(2);
+          return { ...item, ...modeled, meshSupport, effectiveLocal, tunedScore };
+        })
+        .sort((a, b) => b.tunedScore - a.tunedScore || b.posteriorPromise - a.posteriorPromise || a.id.localeCompare(b.id));
+      const programs = rankedPrograms()
+        .map(program => {
+          const modeled = modeledProgramLookup[program.title];
+          const meshSupport = meshSupportForProgram(program, snapshot);
+          const effectiveLocal = +(0.78 * program.localStrength + 0.22 * meshSupport).toFixed(2);
+          const tunedScore = +(
+            normalized.upside * modeled.upside +
+            normalized.posterior * ((0.72 * modeled.posteriorPromise) + (0.28 * program.scenarioFit)) +
+            normalized.local * effectiveLocal +
+            normalized.stability * modeled.stability +
+            normalized.safety * (100 - modeled.executionRisk)
+          ).toFixed(2);
+          return { ...program, ...modeled, meshSupport, effectiveLocal, tunedScore };
+        })
+        .sort((a, b) => b.tunedScore - a.tunedScore || b.posteriorPromise - a.posteriorPromise || a.title.localeCompare(b.title));
+      return { raw, normalized, methods, programs };
+    }
+
+    function buildCustomStrategyRanking(preset = getScenarioPreset()) {
+      return buildCustomStrategyRankingFromRaw(getCustomStrategyWeights().raw, preset);
+    }
+
+    function buildMeshImpactSnapshot(preset = getScenarioPreset()) {
+      const raw = getCustomStrategyWeights().raw;
+      const baselineSnapshot = defaultMeshSnapshotState();
+      const activeSnapshot = getMeshSnapshot();
+      const baseline = buildCustomStrategyRankingFromRaw(raw, preset, baselineSnapshot);
+      const active = buildCustomStrategyRankingFromRaw(raw, preset, activeSnapshot);
+      const baselineMethodRank = Object.fromEntries(baseline.methods.map((item, index) => [item.id, index + 1]));
+      const baselineMethodLookup = Object.fromEntries(baseline.methods.map(item => [item.id, item]));
+      const baselineProgramRank = Object.fromEntries(baseline.programs.map((item, index) => [item.title, index + 1]));
+      const baselineProgramLookup = Object.fromEntries(baseline.programs.map(item => [item.title, item]));
+      const methodMovers = active.methods.map((item, index) => ({
+        ...item,
+        rankCurrent: index + 1,
+        rankBaseline: baselineMethodRank[item.id] || index + 1,
+        rankShift: (baselineMethodRank[item.id] || index + 1) - (index + 1),
+        localShift: +(item.effectiveLocal - (baselineMethodLookup[item.id]?.effectiveLocal || item.effectiveLocal)).toFixed(2)
+      }))
+        .sort((a, b) => Math.abs(b.rankShift) - Math.abs(a.rankShift) || Math.abs(b.localShift) - Math.abs(a.localShift) || a.id.localeCompare(b.id))
+        .slice(0, 5);
+      const programMovers = active.programs.map((item, index) => ({
+        ...item,
+        rankCurrent: index + 1,
+        rankBaseline: baselineProgramRank[item.title] || index + 1,
+        rankShift: (baselineProgramRank[item.title] || index + 1) - (index + 1),
+        localShift: +(item.effectiveLocal - (baselineProgramLookup[item.title]?.effectiveLocal || item.effectiveLocal)).toFixed(2)
+      }))
+        .sort((a, b) => Math.abs(b.rankShift) - Math.abs(a.rankShift) || Math.abs(b.localShift) - Math.abs(a.localShift) || a.title.localeCompare(b.title))
+        .slice(0, 4);
+      const meanEffectiveLocal = +(active.methods.reduce((sum, item) => sum + item.effectiveLocal, 0) / active.methods.length).toFixed(2);
+      const baselineMeanEffectiveLocal = +(baseline.methods.reduce((sum, item) => sum + item.effectiveLocal, 0) / baseline.methods.length).toFixed(2);
+      return {
+        activeSnapshot,
+        baselineSnapshot,
+        active,
+        baseline,
+        methodMovers,
+        programMovers,
+        meanEffectiveLocal,
+        baselineMeanEffectiveLocal
+      };
+    }
+
+    function readAtlasState() {
+      try {
+        if (typeof localStorage === "undefined") return null;
+        const raw = localStorage.getItem(atlasStateKey);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function writeAtlasState(state) {
+      try {
+        if (typeof localStorage === "undefined") return;
+        localStorage.setItem(atlasStateKey, JSON.stringify(state));
+      } catch {
+        // Ignore storage failures in restricted environments.
+      }
+    }
+
+    function restoreAtlasState() {
+      const state = readAtlasState();
+      if (!state) return;
+      atlasControlIds.forEach(id => {
+        const node = document.getElementById(id);
+        if (node && Object.prototype.hasOwnProperty.call(state, id)) node.value = state[id];
+      });
+    }
+
+    function saveAtlasState() {
+      const state = Object.fromEntries(
+        atlasControlIds.map(id => [id, document.getElementById(id)?.value ?? ""])
+      );
+      writeAtlasState(state);
+    }
+
+    function downloadTextFile(filename, content) {
+      if (typeof document === "undefined") return;
+      const blob = new Blob([content], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      if (typeof anchor.click === "function") anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+
+    function populateMethodComparator() {
+      const selectA = document.getElementById("compareMethodA");
+      const selectB = document.getElementById("compareMethodB");
+      const currentA = selectA.value;
+      const currentB = selectB.value;
+      const options = methods.map(item => `<option value="${item.id}">${item.name}</option>`).join("");
+      selectA.innerHTML = options;
+      selectB.innerHTML = options;
+      if (currentA && methods.some(item => item.id === currentA)) selectA.value = currentA;
+      if (currentB && methods.some(item => item.id === currentB)) selectB.value = currentB;
+      if (!selectA.value) selectA.value = "robma-regression";
+      if (!selectB.value) selectB.value = "target-population-ipd";
+      if (selectA.value === selectB.value) {
+        selectB.value = methods.find(item => item.id !== selectA.value)?.id || selectA.value;
+      }
+    }
+
+    function getComparatorMethods(preset = getScenarioPreset()) {
+      const tuning = buildCustomStrategyRanking(preset);
+      const lookup = Object.fromEntries(tuning.methods.map(item => [item.id, item]));
+      let aId = document.getElementById("compareMethodA")?.value || tuning.methods[0].id;
+      let bId = document.getElementById("compareMethodB")?.value || tuning.methods[1]?.id || tuning.methods[0].id;
+      if (aId === bId) {
+        bId = tuning.methods.find(item => item.id !== aId)?.id || bId;
+        document.getElementById("compareMethodB").value = bId;
+      }
+      return {
+        tuning,
+        a: lookup[aId] || tuning.methods[0],
+        b: lookup[bId] || tuning.methods[1] || tuning.methods[0]
+      };
+    }
+
+    function renderMethods() {
+      const items = sortedMethods();
+      const preset = getScenarioPreset();
+      document.getElementById("methodGrid").innerHTML = items.map((item, index) => `
+        <article class="method-card">
+          <div class="method-top">
+            <div>
+              <div class="band ${item.bandClass}">${item.band}</div>
+              <h3>${item.name}</h3>
+              <div class="method-theme">${item.theme}</div>
+            </div>
+            <div class="rank-badge">#${index + 1}</div>
+          </div>
+          <div class="score-strip">
+            <div class="score-box"><strong>${item.deployability}</strong><span>Deployability</span></div>
+            <div class="score-box"><strong>${item.frontier}</strong><span>Frontier</span></div>
+            <div class="score-box"><strong>${item.priority}</strong><span>Priority</span></div>
+            <div class="score-box"><strong>${item.publishability}</strong><span>Publishability</span></div>
+          </div>
+          <p>${item.summary}</p>
+          <ul>
+            <li><strong>Best use:</strong> ${item.bestFor}</li>
+            <li><strong>Main caution:</strong> ${item.caution}</li>
+          </ul>
+          <div class="method-detail">
+            <div><strong>Current scenario fit:</strong> ${item.scenarioFit} under ${preset.name}</div>
+            <div><strong>Posterior promise:</strong> ${modeledMethodLookup[item.id].posteriorPromise} (${modeledMethodLookup[item.id].posteriorLow} to ${modeledMethodLookup[item.id].posteriorHigh})</div>
+            <div><strong>Model verdict:</strong> ${modeledMethodLookup[item.id].verdict} | Top-3 probability ${modeledMethodLookup[item.id].top3Probability}%</div>
+            <div><strong>Local calibration:</strong> ${modeledMethodLookup[item.id].localCalibration} | ${modeledMethodLookup[item.id].calibrationNote}</div>
+            <div><strong>Local asset:</strong> ${item.localAsset || "No mapped local asset yet"}</div>
+            <div><strong>Local leverage:</strong> ${item.localEvidence || "No mapped local evidence yet"}</div>
+            <div><strong>Next paper:</strong> ${item.nextPaper || "Define a benchmark or empirical extension using local assets."}</div>
+          </div>
+          <p><strong>Lead paper:</strong> <a href="${item.source.url}" target="_blank" rel="noreferrer">${item.source.authors}, ${item.source.journal} ${item.year}</a></p>
+        </article>
+      `).join("");
+    }
+
+    function renderLocalEvidence() {
+      document.getElementById("localEvidenceGrid").innerHTML = localEvidenceCards.map(card => `
+        <article class="evidence-card">
+          <h3>${card.title}</h3>
+          <div class="evidence-metric">${card.metric}</div>
+          <p>${card.note}</p>
+          <div class="tiny"><strong>Local asset:</strong> ${card.asset}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderLocalMesh() {
+      const snapshot = getMeshSnapshot();
+      const hottestCluster = [...snapshot.clusters].sort((a, b) => b.count - a.count || a.title.localeCompare(b.title))[0];
+      const recentNames = snapshot.recentProjects.map(item => item.name);
+      document.getElementById("meshStatus").textContent = meshStatusText(snapshot);
+      document.getElementById("meshGrid").innerHTML = snapshot.clusters.map(item => `
+        <article class="evidence-card">
+          <h3>${item.title}</h3>
+          <div class="evidence-metric">${item.count}</div>
+          <p>${item.note}</p>
+        </article>
+      `).join("");
+      document.getElementById("recentProjectList").innerHTML = snapshot.recentProjects.map(item => `
+        <article class="list-item">
+          <strong>${item.name}</strong>
+          <div class="tiny">Touched ${item.when}</div>
+        </article>
+      `).join("");
+      document.getElementById("meshNarrativeList").innerHTML = [
+        {
+          title: "Densest local cluster",
+          body: `${hottestCluster.title} leads with ${hottestCluster.count} directories, so the safest frontier expansions should borrow from that bench.`
+        },
+        {
+          title: "Freshest usable pulse",
+          body: `${recentNames.slice(0, 4).join(", ")} were the freshest projects in the bundled scan and can seed a fast comparative build.`
+        },
+        {
+          title: "Implication",
+          body: "Your local base is broad enough to support both stable benchmark papers and riskier moonshot prototypes without inventing a workflow from zero."
+        }
+      ].map(item => `
+        <article class="list-item">
+          <strong>${item.title}</strong>
+          <div class="tiny">${item.body}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderMeshImpact() {
+      const impact = buildMeshImpactSnapshot();
+      const topBaselineMethod = impact.baseline.methods[0];
+      const topActiveMethod = impact.active.methods[0];
+      const topBaselineProgram = impact.baseline.programs[0];
+      const topActiveProgram = impact.active.programs[0];
+      const biggestMethodMover = impact.methodMovers[0];
+      const biggestProgramMover = impact.programMovers[0];
+      const meanShift = +(impact.meanEffectiveLocal - impact.baselineMeanEffectiveLocal).toFixed(2);
+      document.getElementById("meshImpactGrid").innerHTML = `
+        <article class="scenario-card">
+          <h3>Top method shift</h3>
+          <div class="scenario-score">${topBaselineMethod.id === topActiveMethod.id ? "0" : "1"}</div>
+          <div><strong>${topBaselineMethod.name} -> ${topActiveMethod.name}</strong></div>
+          <div class="tiny">${impact.baselineSnapshot.source} versus ${impact.activeSnapshot.source}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Top program shift</h3>
+          <div class="scenario-score">${topBaselineProgram.title === topActiveProgram.title ? "0" : "1"}</div>
+          <div><strong>${topBaselineProgram.title} -> ${topActiveProgram.title}</strong></div>
+          <div class="tiny">${impact.activeSnapshot.projectRoot}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Largest method mover</h3>
+          <div class="scenario-score">${biggestMethodMover.rankShift > 0 ? "+" : ""}${biggestMethodMover.rankShift}</div>
+          <div><strong>${biggestMethodMover.name}</strong></div>
+          <div class="tiny">Local shift ${biggestMethodMover.localShift}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Mean local shift</h3>
+          <div class="scenario-score">${meanShift > 0 ? "+" : ""}${meanShift}</div>
+          <div><strong>${impact.baselineMeanEffectiveLocal} -> ${impact.meanEffectiveLocal}</strong></div>
+          <div class="tiny">Average effective local support across all methods</div>
+        </article>
+      `;
+      document.getElementById("meshImpactMethodList").innerHTML = impact.methodMovers.map(item => `
+        <article class="list-item">
+          <strong>${item.name}</strong>
+          <div class="tiny">Rank ${item.rankBaseline} -> ${item.rankCurrent} | Shift ${item.rankShift > 0 ? "+" : ""}${item.rankShift}</div>
+          <div class="tiny">Effective local ${item.effectiveLocal} | Delta ${item.localShift > 0 ? "+" : ""}${item.localShift}</div>
+        </article>
+      `).join("");
+      document.getElementById("meshImpactProgramList").innerHTML = impact.programMovers.map(item => `
+        <article class="list-item">
+          <strong>${item.title}</strong>
+          <div class="tiny">Rank ${item.rankBaseline} -> ${item.rankCurrent} | Shift ${item.rankShift > 0 ? "+" : ""}${item.rankShift}</div>
+          <div class="tiny">Effective local ${item.effectiveLocal} | Delta ${item.localShift > 0 ? "+" : ""}${item.localShift}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderPrograms() {
+      const items = rankedPrograms();
+      document.getElementById("programGrid").innerHTML = items.map(program => `
+        <article class="program-card">
+          <h3>${program.title}</h3>
+          <div class="evidence-metric">${program.score}</div>
+          <p class="tiny"><strong>Current scenario fit:</strong> ${program.scenarioFit}</p>
+          <p><strong>Why now:</strong> ${program.why}</p>
+          <p><strong>Local data:</strong> ${program.localData}</p>
+          <p><strong>Publishable output:</strong> ${program.output}</p>
+        </article>
+      `).join("");
+    }
+
+    function renderScenarioLab() {
+      const preset = getScenarioPreset();
+      const orderedMethods = currentScenarioOrderedMethods();
+      const orderedPrograms = rankedPrograms();
+      const mover = biggestMover(orderedMethods);
+      const averageFit = (orderedMethods.reduce((sum, item) => sum + item.scenarioFit, 0) / orderedMethods.length).toFixed(2);
+      const moverText = mover.rankShift > 0
+        ? `Climbs ${mover.rankShift} places from the baseline priority ranking.`
+        : mover.rankShift < 0
+          ? `Drops ${Math.abs(mover.rankShift)} places when this scenario is stressed.`
+          : "Holds roughly the same position as in the baseline ranking.";
+      document.getElementById("scenarioNarrative").innerHTML = `<strong>${preset.name}:</strong> ${preset.description}`;
+      document.getElementById("scenarioInsightGrid").innerHTML = `
+        <article class="scenario-card">
+          <h3>Top method</h3>
+          <div class="scenario-score">${orderedMethods[0].scenarioFit}</div>
+          <div><strong>${orderedMethods[0].name}</strong></div>
+          <div class="tiny">${orderedMethods[0].theme}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Top program</h3>
+          <div class="scenario-score">${orderedPrograms[0].scenarioFit}</div>
+          <div><strong>${orderedPrograms[0].title}</strong></div>
+          <div class="tiny">${orderedPrograms[0].output}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Biggest mover</h3>
+          <div class="scenario-score">${mover.rankShift > 0 ? "+" : ""}${mover.rankShift}</div>
+          <div><strong>${mover.name}</strong></div>
+          <div class="tiny">${moverText}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Mean fit</h3>
+          <div class="scenario-score">${averageFit}</div>
+          <div><strong>${orderedMethods.length} methods scored</strong></div>
+          <div class="tiny">Scenario-fit average across the full frontier set.</div>
+        </article>
+      `;
+    }
+
+    function renderPortfolios() {
+      const topMethods = currentScenarioOrderedMethods().slice(0, 4);
+      const topPrograms = rankedPrograms().slice(0, 3);
+      document.getElementById("portfolioMethods").innerHTML = topMethods.map((item, index) => `
+        <div class="list-item">
+          <strong>#${index + 1} ${item.name}</strong>
+          <div class="tiny">${item.theme}</div>
+          <div class="tiny">Scenario fit ${item.scenarioFit} | Publishability ${item.publishability}</div>
+          <div class="tiny">${item.nextPaper}</div>
+        </div>
+      `).join("");
+      document.getElementById("portfolioPrograms").innerHTML = topPrograms.map((program, index) => `
+        <div class="list-item">
+          <strong>#${index + 1} ${program.title}</strong>
+          <div class="tiny">Scenario fit ${program.scenarioFit} | Base score ${program.score}</div>
+          <div class="tiny">${program.localData}</div>
+          <div class="tiny">${program.output}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderThemes() {
+      const items = themeSummaries(currentScenarioOrderedMethods());
+      document.getElementById("themeGrid").innerHTML = items.map(item => `
+        <article class="theme-card">
+          <h3>${item.theme}</h3>
+          <div class="tiny"><strong>Average scenario fit:</strong> ${item.avgScenarioFit}</div>
+          <div class="tiny"><strong>Average publishability:</strong> ${item.avgPublishability}</div>
+          <div class="tiny"><strong>Best method:</strong> ${item.best.name}</div>
+          <div class="tiny"><strong>Next paper:</strong> ${item.best.nextPaper}</div>
+          <div class="theme-bar"><span style="width:${Math.max(8, Math.min(100, item.avgScenarioFit))}%;"></span></div>
+        </article>
+      `).join("");
+    }
+
+    function renderPromiseModel() {
+      const topPosterior = posteriorOrderedMethods[0];
+      const mostRobust = [...posteriorOrderedMethods].sort((a, b) => b.stability - a.stability || b.posteriorPromise - a.posteriorPromise)[0];
+      const topProbability = [...posteriorOrderedMethods].sort((a, b) => b.top3Probability - a.top3Probability || b.posteriorPromise - a.posteriorPromise)[0];
+      const topUpside = [...posteriorOrderedMethods]
+        .filter(item => item.paretoEfficient)
+        .sort((a, b) => b.upsideScore - a.upsideScore || b.posteriorPromise - a.posteriorPromise)[0]
+        || [...posteriorOrderedMethods].sort((a, b) => b.upsideScore - a.upsideScore || b.posteriorPromise - a.posteriorPromise)[0];
+      const highUpsideQueue = [...posteriorOrderedMethods]
+        .sort((a, b) => b.upsideScore - a.upsideScore || b.posteriorPromise - a.posteriorPromise || a.id.localeCompare(b.id))
+        .slice(0, 5);
+      const priorityBuildQueue = [...posteriorOrderedMethods]
+        .filter(item => item.verdict === "Compelling build" || item.verdict === "Promising")
+        .slice(0, 5);
+      document.getElementById("modelInsightGrid").innerHTML = `
+        <article class="scenario-card">
+          <h3>Top posterior</h3>
+          <div class="scenario-score">${topPosterior.posteriorPromise}</div>
+          <div><strong>${topPosterior.name}</strong></div>
+          <div class="tiny">${topPosterior.posteriorLow} to ${topPosterior.posteriorHigh}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Most robust</h3>
+          <div class="scenario-score">${mostRobust.stability}</div>
+          <div><strong>${mostRobust.name}</strong></div>
+          <div class="tiny">Worst-case fit ${mostRobust.worstScenarioFit} | Width ${mostRobust.uncertaintyWidth}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Highest top-3 probability</h3>
+          <div class="scenario-score">${topProbability.top3Probability}%</div>
+          <div><strong>${topProbability.name}</strong></div>
+          <div class="tiny">Posterior ${topProbability.posteriorPromise}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Pareto moonshot</h3>
+          <div class="scenario-score">${topUpside.upsideScore}</div>
+          <div><strong>${topUpside.name}</strong></div>
+          <div class="tiny">${topUpside.paretoEfficient ? "Pareto-efficient" : "Not Pareto-efficient"} | Risk ${topUpside.executionRisk}</div>
+        </article>
+      `;
+      document.getElementById("highUpsideList").innerHTML = highUpsideQueue.map((item, index) => `
+        <div class="list-item">
+          <strong>#${index + 1} ${item.name}</strong>
+          <div class="tiny">Upside ${item.upsideScore} | Posterior ${item.posteriorPromise} | P(top 3) ${item.top3Probability}%</div>
+          <div class="tiny">${item.verdict} | ${item.posteriorLow} to ${item.posteriorHigh}</div>
+          <div class="tiny">${item.nextPaper}</div>
+        </div>
+      `).join("");
+      document.getElementById("priorityBuildList").innerHTML = priorityBuildQueue.map((item, index) => `
+        <div class="list-item">
+          <strong>#${index + 1} ${item.name}</strong>
+          <div class="tiny">Posterior ${item.posteriorPromise} | Stability ${item.stability} | P(top 3) ${item.top3Probability}%</div>
+          <div class="tiny">${item.verdict} | Calibration ${item.localCalibration}</div>
+          <div class="tiny">${item.nextPaper}</div>
+        </div>
+      `).join("");
+      document.getElementById("promiseTableBody").innerHTML = posteriorOrderedMethods.map(item => `
+        <tr>
+          <td><strong>${item.name}</strong><br><span class="tiny">${item.theme}</span></td>
+          <td>${item.posteriorPromise}</td>
+          <td>${item.posteriorLow} to ${item.posteriorHigh}</td>
+          <td>${item.top3Probability}%</td>
+          <td>${item.paretoEfficient ? "Yes" : "No"}</td>
+          <td>${item.upsideScore}</td>
+          <td>${item.executionRisk}</td>
+          <td>${item.verdict}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderMoonshotTriage() {
+      const robustCore = posteriorOrderedMethods.slice(0, 4);
+      const tractableMoonshots = posteriorOrderedMethods
+        .filter(item => item.upsideScore >= 82 && item.posteriorPromise >= 74 && item.executionRisk <= 36)
+        .slice(0, 5);
+      const fragileMoonshots = posteriorOrderedMethods
+        .filter(item => item.upsideScore >= 84 && (item.posteriorPromise < 74 || item.executionRisk > 36))
+        .sort((a, b) => b.upsideScore - a.upsideScore || a.posteriorPromise - b.posteriorPromise)
+        .slice(0, 5);
+      document.getElementById("robustCoreList").innerHTML = robustCore.map((item, index) => `
+        <div class="list-item">
+          <strong>#${index + 1} ${item.name}</strong>
+          <div class="tiny">Posterior ${item.posteriorPromise} | P(top 3) ${item.top3Probability}% | Risk ${item.executionRisk}</div>
+          <div class="tiny">${item.verdict}</div>
+        </div>
+      `).join("");
+      document.getElementById("tractableMoonshotList").innerHTML = tractableMoonshots.map((item, index) => `
+        <div class="list-item">
+          <strong>#${index + 1} ${item.name}</strong>
+          <div class="tiny">Upside ${item.upsideScore} | Posterior ${item.posteriorPromise} | Pareto ${item.paretoEfficient ? "Yes" : "No"}</div>
+          <div class="tiny">${item.nextPaper}</div>
+        </div>
+      `).join("");
+      document.getElementById("fragileMoonshotList").innerHTML = fragileMoonshots.map((item, index) => `
+        <div class="list-item">
+          <strong>#${index + 1} ${item.name}</strong>
+          <div class="tiny">Upside ${item.upsideScore} | Posterior ${item.posteriorPromise} | Risk ${item.executionRisk}</div>
+          <div class="tiny">${item.calibrationNote}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderScenarioMatrix() {
+      const scoreLookup = Object.fromEntries(
+        scenarioPresets.map(preset => [preset.id, Object.fromEntries(methodsForScenario(preset).map(item => [item.id, item.scenarioFit]))])
+      );
+      document.getElementById("scenarioMatrixBody").innerHTML = posteriorOrderedMethods.map(item => `
+        <tr>
+          <td><strong>${item.name}</strong><br><span class="tiny">${item.theme}</span></td>
+          <td>${scoreLookup["balanced"][item.id]}</td>
+          <td>${scoreLookup["build-now"][item.id]}</td>
+          <td>${scoreLookup["bias-crisis"][item.id]}</td>
+          <td>${scoreLookup["decision-transport"][item.id]}</td>
+          <td>${scoreLookup["network-survival"][item.id]}</td>
+          <td>${scoreLookup["moonshot"][item.id]}</td>
+          <td>${item.posteriorPromise}</td>
+          <td>${item.upsideScore}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderProgramModel() {
+      const topProgram = modeledPrograms[0];
+      const topProgramUpside = [...modeledPrograms].sort((a, b) => b.upside - a.upside || b.posteriorPromise - a.posteriorPromise)[0];
+      const mostStableProgram = [...modeledPrograms].sort((a, b) => b.stability - a.stability || b.posteriorPromise - a.posteriorPromise)[0];
+      document.getElementById("programModelGrid").innerHTML = `
+        <article class="scenario-card">
+          <h3>Top program</h3>
+          <div class="scenario-score">${topProgram.posteriorPromise}</div>
+          <div><strong>${topProgram.title}</strong></div>
+          <div class="tiny">${topProgram.verdict}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Highest program upside</h3>
+          <div class="scenario-score">${topProgramUpside.upside}</div>
+          <div><strong>${topProgramUpside.title}</strong></div>
+          <div class="tiny">${topProgramUpside.posteriorPromise} posterior</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Most stable program</h3>
+          <div class="scenario-score">${mostStableProgram.stability}</div>
+          <div><strong>${mostStableProgram.title}</strong></div>
+          <div class="tiny">Worst-case ${mostStableProgram.worstScenarioFit}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Program top-3 leader</h3>
+          <div class="scenario-score">${topProgram.top3Probability}%</div>
+          <div><strong>${topProgram.title}</strong></div>
+          <div class="tiny">${topProgram.posteriorLow} to ${topProgram.posteriorHigh}</div>
+        </article>
+      `;
+      document.getElementById("programPromiseTableBody").innerHTML = modeledPrograms.map(program => `
+        <tr>
+          <td><strong>${program.title}</strong></td>
+          <td>${program.posteriorPromise}</td>
+          <td>${program.posteriorLow} to ${program.posteriorHigh}</td>
+          <td>${program.top3Probability}%</td>
+          <td>${program.worstScenarioFit}</td>
+          <td>${program.executionRisk}</td>
+          <td>${program.verdict}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderStackBuilder() {
+      const preset = getScenarioPreset();
+      const methodBundles = buildMethodBundles(preset);
+      const programChains = buildProgramChains(preset);
+      const gapRadar = buildGapRadar(preset);
+      const topBundle = methodBundles[0];
+      const safestBundle = [...methodBundles].sort((a, b) => a.meanRisk - b.meanRisk || b.hedgeStrength - a.hedgeStrength)[0];
+      const topChain = programChains[0];
+      const biggestGap = gapRadar[0];
+      document.getElementById("stackBuilderSummary").innerHTML = `
+        <article class="scenario-card">
+          <div class="mini-kicker">Best current stack</div>
+          <div class="scenario-score">${topBundle.bundleScore}</div>
+          <div class="tiny">${topBundle.label}</div>
+          <p>${topBundle.names}</p>
+        </article>
+        <article class="scenario-card">
+          <div class="mini-kicker">Safest hedge</div>
+          <div class="scenario-score">${safestBundle.hedgeStrength}</div>
+          <div class="tiny">Risk ${safestBundle.meanRisk} | Stability ${safestBundle.meanStability}</div>
+          <p>${safestBundle.names}</p>
+        </article>
+        <article class="scenario-card">
+          <div class="mini-kicker">Best program chain</div>
+          <div class="scenario-score">${topChain.chainScore}</div>
+          <div class="tiny">${topChain.label}</div>
+          <p>${topChain.sequenceTitles}</p>
+        </article>
+        <article class="scenario-card">
+          <div class="mini-kicker">Largest unresolved gap</div>
+          <div class="scenario-score">${biggestGap.gapPressure}</div>
+          <div class="tiny">${biggestGap.theme}</div>
+          <p>${biggestGap.action}</p>
+        </article>
+      `;
+      document.getElementById("methodBundleList").innerHTML = methodBundles.map(bundle => `
+        <article class="list-item">
+          <strong>${bundle.label}</strong>
+          <div class="tiny">${bundle.names}</div>
+          <div class="tiny">Bundle ${bundle.bundleScore} | Scenario ${bundle.meanScenarioFit} | Risk ${bundle.meanRisk}</div>
+          <div class="tiny">${bundle.claim}</div>
+        </article>
+      `).join("");
+      document.getElementById("programChainList").innerHTML = programChains.map(chain => `
+        <article class="list-item">
+          <strong>${chain.label}</strong>
+          <div class="tiny">${chain.sequenceTitles}</div>
+          <div class="tiny">Chain ${chain.chainScore} | Posterior ${chain.meanPosterior} | Coverage ${chain.themeCoverage}</div>
+          <div class="tiny">${chain.output}</div>
+        </article>
+      `).join("");
+      document.getElementById("gapRadarList").innerHTML = gapRadar.map(item => `
+        <article class="list-item">
+          <strong>${item.theme}</strong>
+          <div class="tiny">Gap ${item.gapPressure} | Posterior ${item.avgPosterior} | Local ${item.avgLocal}</div>
+          <div class="tiny">Lead method: ${item.lead.name}</div>
+          <div class="tiny">${item.action}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderStrategyTuner() {
+      const preset = getScenarioPreset();
+      const tuning = buildCustomStrategyRanking(preset);
+      const topMethod = tuning.methods[0];
+      const topProgram = tuning.programs[0];
+      const safestMethod = [...tuning.methods].sort((a, b) => a.executionRisk - b.executionRisk || b.tunedScore - a.tunedScore)[0];
+      const highestUpside = [...tuning.methods].sort((a, b) => b.upsideScore - a.upsideScore || b.tunedScore - a.tunedScore)[0];
+      document.getElementById("customUpsideValue").textContent = tuning.raw.upside;
+      document.getElementById("customPosteriorValue").textContent = tuning.raw.posterior;
+      document.getElementById("customLocalValue").textContent = tuning.raw.local;
+      document.getElementById("customStabilityValue").textContent = tuning.raw.stability;
+      document.getElementById("customSafetyValue").textContent = tuning.raw.safety;
+      document.getElementById("tunerSummaryGrid").innerHTML = `
+        <article class="scenario-card">
+          <h3>Top tuned method</h3>
+          <div class="scenario-score">${topMethod.tunedScore}</div>
+          <div><strong>${topMethod.name}</strong></div>
+          <div class="tiny">${topMethod.verdict}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Top tuned program</h3>
+          <div class="scenario-score">${topProgram.tunedScore}</div>
+          <div><strong>${topProgram.title}</strong></div>
+          <div class="tiny">${topProgram.verdict}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Safest strong build</h3>
+          <div class="scenario-score">${100 - safestMethod.executionRisk}</div>
+          <div><strong>${safestMethod.name}</strong></div>
+          <div class="tiny">Risk ${safestMethod.executionRisk}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Highest upside kept alive</h3>
+          <div class="scenario-score">${highestUpside.upsideScore}</div>
+          <div><strong>${highestUpside.name}</strong></div>
+          <div class="tiny">Tuned ${highestUpside.tunedScore}</div>
+        </article>
+      `;
+      document.getElementById("tunedMethodList").innerHTML = tuning.methods.slice(0, 5).map((item, index) => `
+        <article class="list-item">
+          <strong>#${index + 1} ${item.name}</strong>
+          <div class="tiny">Tuned ${item.tunedScore} | Posterior ${item.posteriorPromise} | Local ${item.effectiveLocal}</div>
+          <div class="tiny">Mesh support ${item.meshSupport} | Static calibration ${item.localCalibration}</div>
+          <div class="tiny">${item.nextPaper}</div>
+        </article>
+      `).join("");
+      document.getElementById("tunedProgramList").innerHTML = tuning.programs.slice(0, 4).map((item, index) => `
+        <article class="list-item">
+          <strong>#${index + 1} ${item.title}</strong>
+          <div class="tiny">Tuned ${item.tunedScore} | Posterior ${item.posteriorPromise} | Upside ${item.upside}</div>
+          <div class="tiny">Live-adjusted local support ${item.effectiveLocal} | Mesh ${item.meshSupport}</div>
+          <div class="tiny">${item.output}</div>
+        </article>
+      `).join("");
+      document.getElementById("tunedMemoList").innerHTML = [
+        {
+          title: "Current custom stance",
+          body: `Under ${preset.name}, the manual weights currently favor ${topMethod.name} because it combines high posterior strength with live-adjusted local support ${topMethod.effectiveLocal}.`
+        },
+        {
+          title: "Best research move",
+          body: `Start with ${topProgram.title}, then pair it with ${topMethod.name} as the lead method family.`
+        },
+        {
+          title: "Main tension",
+          body: `${highestUpside.name} keeps the highest upside alive, but ${safestMethod.name} is the execution hedge if you need a publishable result quickly.`
+        }
+      ].map(item => `
+        <article class="list-item">
+          <strong>${item.title}</strong>
+          <div class="tiny">${item.body}</div>
+        </article>
+      `).join("");
+    }
+
+    function buildStrategySweepSnapshot(preset = getScenarioPreset()) {
+      const runs = strategyArchetypes.map(archetype => {
+        const ranking = buildCustomStrategyRankingFromRaw(archetype.raw, preset);
+        return {
+          archetype,
+          method: ranking.methods[0],
+          program: ranking.programs[0]
+        };
+      });
+      const methodWins = new Map();
+      const programWins = new Map();
+      runs.forEach(run => {
+        const methodEntry = methodWins.get(run.method.id) || { count: 0, item: run.method };
+        methodEntry.count += 1;
+        methodWins.set(run.method.id, methodEntry);
+        const programEntry = programWins.get(run.program.title) || { count: 0, item: run.program };
+        programEntry.count += 1;
+        programWins.set(run.program.title, programEntry);
+      });
+      const consensusMethod = [...methodWins.values()].sort((a, b) => b.count - a.count || a.item.name.localeCompare(b.item.name))[0];
+      const consensusProgram = [...programWins.values()].sort((a, b) => b.count - a.count || a.item.title.localeCompare(b.item.title))[0];
+      const widestMethod = [...runs].sort((a, b) => b.method.upsideScore - a.method.upsideScore || b.method.tunedScore - a.method.tunedScore)[0];
+      const safestProgram = [...runs].sort((a, b) => a.program.executionRisk - b.program.executionRisk || b.program.tunedScore - a.program.tunedScore)[0];
+      return { runs, consensusMethod, consensusProgram, widestMethod, safestProgram };
+    }
+
+    function renderStrategySweep() {
+      const { runs, consensusMethod, consensusProgram, widestMethod, safestProgram } = buildStrategySweepSnapshot();
+      document.getElementById("strategySweepGrid").innerHTML = `
+        <article class="scenario-card">
+          <h3>Consensus method</h3>
+          <div class="scenario-score">${consensusMethod.count}</div>
+          <div><strong>${consensusMethod.item.name}</strong></div>
+          <div class="tiny">Top choice across ${runs.length} stances</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Consensus program</h3>
+          <div class="scenario-score">${consensusProgram.count}</div>
+          <div><strong>${consensusProgram.item.title}</strong></div>
+          <div class="tiny">Top choice across ${runs.length} stances</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Widest upside winner</h3>
+          <div class="scenario-score">${widestMethod.method.upsideScore}</div>
+          <div><strong>${widestMethod.method.name}</strong></div>
+          <div class="tiny">${widestMethod.archetype.label}</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Safest winning program</h3>
+          <div class="scenario-score">${100 - safestProgram.program.executionRisk}</div>
+          <div><strong>${safestProgram.program.title}</strong></div>
+          <div class="tiny">${safestProgram.archetype.label}</div>
+        </article>
+      `;
+      document.getElementById("strategySweepTableBody").innerHTML = runs.map(run => `
+        <tr>
+          <td><strong>${run.archetype.label}</strong></td>
+          <td>${run.method.name}</td>
+          <td>${run.method.tunedScore}</td>
+          <td>${run.program.title}</td>
+          <td>${run.program.tunedScore}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderMethodComparator() {
+      const preset = getScenarioPreset();
+      const { a, b } = getComparatorMethods(preset);
+      const safetyA = +(100 - a.executionRisk).toFixed(2);
+      const safetyB = +(100 - b.executionRisk).toFixed(2);
+      const tunedLeader = a.tunedScore >= b.tunedScore ? a : b;
+      const upsideLeader = a.upsideScore >= b.upsideScore ? a : b;
+      const safetyLeader = safetyA >= safetyB ? a : b;
+      const posteriorLeader = a.posteriorPromise >= b.posteriorPromise ? a : b;
+      document.getElementById("compareSummaryGrid").innerHTML = `
+        <article class="scenario-card">
+          <h3>Tuned winner</h3>
+          <div class="scenario-score">${Math.abs(a.tunedScore - b.tunedScore).toFixed(2)}</div>
+          <div><strong>${tunedLeader.name}</strong></div>
+          <div class="tiny">Lead on current manual weighting</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Posterior winner</h3>
+          <div class="scenario-score">${Math.abs(a.posteriorPromise - b.posteriorPromise).toFixed(2)}</div>
+          <div><strong>${posteriorLeader.name}</strong></div>
+          <div class="tiny">Cross-scenario credibility edge</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Upside winner</h3>
+          <div class="scenario-score">${Math.abs(a.upsideScore - b.upsideScore).toFixed(2)}</div>
+          <div><strong>${upsideLeader.name}</strong></div>
+          <div class="tiny">Field-reset potential edge</div>
+        </article>
+        <article class="scenario-card">
+          <h3>Safety winner</h3>
+          <div class="scenario-score">${Math.abs(safetyA - safetyB).toFixed(2)}</div>
+          <div><strong>${safetyLeader.name}</strong></div>
+          <div class="tiny">Execution safety edge</div>
+        </article>
+      `;
+      document.getElementById("compareTraceA").innerHTML = [
+        { label: "Verdict", value: `${a.verdict} | Tuned ${a.tunedScore}` },
+        { label: "Lead paper", value: `${a.source.authors}, ${a.source.journal} ${a.year}` },
+        { label: "Local asset", value: a.localAsset || "No mapped local asset yet." },
+        { label: "Live mesh support", value: `${a.meshSupport} -> effective local ${a.effectiveLocal}` },
+        { label: "Next paper", value: a.nextPaper || "Define a benchmark extension." }
+      ].map(item => `
+        <article class="list-item">
+          <strong>${item.label}</strong>
+          <div class="tiny">${item.value}</div>
+        </article>
+      `).join("");
+      document.getElementById("compareTraceB").innerHTML = [
+        { label: "Verdict", value: `${b.verdict} | Tuned ${b.tunedScore}` },
+        { label: "Lead paper", value: `${b.source.authors}, ${b.source.journal} ${b.year}` },
+        { label: "Local asset", value: b.localAsset || "No mapped local asset yet." },
+        { label: "Live mesh support", value: `${b.meshSupport} -> effective local ${b.effectiveLocal}` },
+        { label: "Next paper", value: b.nextPaper || "Define a benchmark extension." }
+      ].map(item => `
+        <article class="list-item">
+          <strong>${item.label}</strong>
+          <div class="tiny">${item.value}</div>
+        </article>
+      `).join("");
+      const rows = [
+        ["Current scenario fit", a.scenarioFit, b.scenarioFit],
+        ["Tuned score", a.tunedScore, b.tunedScore],
+        ["Posterior promise", a.posteriorPromise, b.posteriorPromise],
+        ["Upside score", a.upsideScore, b.upsideScore],
+        ["Stability", a.stability, b.stability],
+        ["Static local calibration", a.localCalibration, b.localCalibration],
+        ["Live mesh support", a.meshSupport, b.meshSupport],
+        ["Effective local support", a.effectiveLocal, b.effectiveLocal],
+        ["Execution safety", safetyA, safetyB],
+        ["Top-3 probability", a.top3Probability, b.top3Probability]
+      ];
+      document.getElementById("compareMetricTableBody").innerHTML = rows.map(([label, left, right]) => {
+        const delta = +(left - right).toFixed(2);
+        return `
+          <tr>
+            <td><strong>${label}</strong></td>
+            <td>${left}</td>
+            <td>${right}</td>
+            <td>${delta > 0 ? "+" : ""}${delta}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function generateStudyBrief() {
+      const preset = getScenarioPreset();
+      const tuning = buildCustomStrategyRanking(preset);
+      const topMethod = tuning.methods[0];
+      const topProgram = tuning.programs[0];
+      const topBundle = buildMethodBundles(preset)[0];
+      const topChain = buildProgramChains(preset)[0];
+      const biggestGap = buildGapRadar(preset)[0];
+      const snapshot = getMeshSnapshot();
+      const hottestCluster = [...snapshot.clusters].sort((a, b) => b.count - a.count || a.title.localeCompare(b.title))[0];
+      const recent = snapshot.recentProjects.slice(0, 4).map(item => item.name).join(", ");
+      return [
+        `# Meta-Frontier Study Brief`,
+        ``,
+        `## Current stance`,
+        `Scenario: ${preset.name}`,
+        `Manual weights: upside ${tuning.raw.upside}, posterior ${tuning.raw.posterior}, local ${tuning.raw.local}, stability ${tuning.raw.stability}, safety ${tuning.raw.safety}`,
+        ``,
+        `## Lead recommendation`,
+        `Lead method family: ${topMethod.name}`,
+        `Lead program: ${topProgram.title}`,
+        `Why this wins: it combines tuned score ${topMethod.tunedScore}, posterior promise ${topMethod.posteriorPromise}, and live-adjusted local support ${topMethod.effectiveLocal}.`,
+        ``,
+        `## Best executable stack`,
+        `Method bundle: ${topBundle.names}`,
+        `Program chain: ${topChain.sequenceTitles}`,
+        `Bundle claim: ${topBundle.claim}`,
+        ``,
+        `## Main unresolved gap`,
+        `Gap theme: ${biggestGap.theme}`,
+        `Gap action: ${biggestGap.action}`,
+        ``,
+        `## Local support`,
+        `Mesh snapshot: ${snapshot.source} for ${snapshot.projectRoot}, captured ${snapshot.capturedAt}`,
+        `Densest local cluster: ${hottestCluster.title} (${hottestCluster.count} directories)`,
+        `Recent project pulse: ${recent}`,
+        ``,
+        `## Immediate next steps`,
+        `1. Build around ${topProgram.title} with ${topMethod.name} as the lead method family.`,
+        `2. Use the bundle ${topBundle.names} as the benchmark hedge instead of a single-method claim.`,
+        `3. Close the ${biggestGap.theme} gap before broadening the paper into a general recommendation.`,
+        ``,
+        `## Sources inside app`,
+        `Atlas: scenario model, stack builder, custom tuner, strategy sweep, and bundled local research mesh snapshot.`
+      ].join("\n");
+    }
+
+    function renderStudyBrief() {
+      document.getElementById("briefPreview").textContent = generateStudyBrief();
+    }
+
+    function renderSourceTable() {
+      const items = currentScenarioOrderedMethods();
+      document.getElementById("sourceTableBody").innerHTML = items.map(item => `
+        <tr>
+          <td><strong>${item.name}</strong><br><span class="tiny">${item.theme}</span></td>
+          <td>${item.source.title}<br><span class="tiny">${item.source.authors}</span></td>
+          <td>${item.source.journal}</td>
+          <td>${item.year}</td>
+          <td>${item.scenarioFit}</td>
+          <td><a href="${item.source.url}" target="_blank" rel="noreferrer">Open source</a></td>
+        </tr>
+      `).join("");
+    }
+
+    function refreshAtlas() {
+      updateMetrics();
+      renderLocalEvidence();
+      renderLocalMesh();
+      renderMeshImpact();
+      renderPrograms();
+      renderScenarioLab();
+      renderPortfolios();
+      renderThemes();
+      renderPromiseModel();
+      renderMoonshotTriage();
+      renderScenarioMatrix();
+      renderProgramModel();
+      renderStackBuilder();
+      renderStrategyTuner();
+      renderStrategySweep();
+      renderMethodComparator();
+      renderStudyBrief();
+      renderMethods();
+      renderSourceTable();
+      document.getElementById("scriptPreview").textContent = generateRScript();
+      saveAtlasState();
+    }
+
+    ["sortSelect", "bandSelect", "scenarioSelect"].forEach(id => {
+      document.getElementById(id).addEventListener("change", refreshAtlas);
+    });
+
+    ["customUpsideRange", "customPosteriorRange", "customLocalRange", "customStabilityRange", "customSafetyRange"].forEach(id => {
+      document.getElementById(id).addEventListener("input", refreshAtlas);
+      document.getElementById(id).addEventListener("change", refreshAtlas);
+    });
+
+    ["compareMethodA", "compareMethodB"].forEach(id => {
+      document.getElementById(id).addEventListener("input", refreshAtlas);
+      document.getElementById(id).addEventListener("change", refreshAtlas);
+    });
+
+    populateMethodComparator();
+    restoreAtlasState();
+    populateMethodComparator();
+    refreshAtlas();
+
+    const validationState = {
+      webR: null,
+      loading: false,
+      running: false
+    };
+
+    function escapeRString(value) {
+      return String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    }
+
+    function generateRScript() {
+      const preset = getScenarioPreset();
+      const currentScenarioItems = methodsForScenario(preset);
+      const tuning = buildCustomStrategyRanking(preset);
+      const sweep = buildStrategySweepSnapshot(preset);
+      const comparator = getComparatorMethods(preset);
+      const tuningMethodLookup = Object.fromEntries(tuning.methods.map(item => [item.id, item]));
+      const tuningProgramLookup = Object.fromEntries(tuning.programs.map(program => [program.title, program]));
+      const ids = scoredMethods.map(item => `"${escapeRString(item.id)}"`).join(", ");
+      const years = scoredMethods.map(item => item.year).join(", ");
+      const themes = scoredMethods.map(item => `"${escapeRString(item.theme)}"`).join(", ");
+      const software = scoredMethods.map(item => item.software).join(", ");
+      const empirical = scoredMethods.map(item => item.empirical).join(", ");
+      const scope = scoredMethods.map(item => item.scope).join(", ");
+      const novelty = scoredMethods.map(item => item.novelty).join(", ");
+      const biasGuard = scoredMethods.map(item => item.biasGuard).join(", ");
+      const decisionLift = scoredMethods.map(item => item.decisionLift).join(", ");
+      const localLeverage = scoredMethods.map(item => item.localLeverage || 50).join(", ");
+      const dataLeverage = scoredMethods.map(item => item.dataLeverage || 50).join(", ");
+      const currentScenarioFit = currentScenarioItems.map(item => item.scenarioFit).join(", ");
+      const posteriorPromise = scoredMethods.map(item => modeledMethodLookup[item.id].posteriorPromise).join(", ");
+      const methodLocalCalibration = scoredMethods.map(item => modeledMethodLookup[item.id].localCalibration).join(", ");
+      const methodMeshSupport = scoredMethods.map(item => tuningMethodLookup[item.id].meshSupport).join(", ");
+      const methodEffectiveLocal = scoredMethods.map(item => tuningMethodLookup[item.id].effectiveLocal).join(", ");
+      const methodUpside = scoredMethods.map(item => modeledMethodLookup[item.id].upsideScore).join(", ");
+      const focusThemes = preset.focusThemes.map(item => `"${escapeRString(item)}"`).join(", ");
+      const customRaw = getCustomStrategyWeights().raw;
+      const compareAId = escapeRString(comparator.a.id);
+      const compareBId = escapeRString(comparator.b.id);
+      const programTitles = programs.map(program => `"${escapeRString(program.title)}"`).join(", ");
+      const programScenarioCurrent = programs.map(program => programScenarioFit(program, preset)).join(", ");
+      const programPosterior = programs.map(program => modeledProgramLookup[program.title].posteriorPromise).join(", ");
+      const programStability = programs.map(program => modeledProgramLookup[program.title].stability).join(", ");
+      const programLocalStrength = programs.map(program => program.localStrength ?? 75).join(", ");
+      const programMeshSupport = programs.map(program => tuningProgramLookup[program.title].meshSupport).join(", ");
+      const programEffectiveLocal = programs.map(program => tuningProgramLookup[program.title].effectiveLocal).join(", ");
+      const programExecutionRisk = programs.map(program => modeledProgramLookup[program.title].executionRisk).join(", ");
+      const programUpside = programs.map(program => modeledProgramLookup[program.title].upside).join(", ");
+      const archetypeLabels = strategyArchetypes.map(item => `"${escapeRString(item.label)}"`).join(", ");
+      const archetypeUpside = strategyArchetypes.map(item => item.raw.upside).join(", ");
+      const archetypePosterior = strategyArchetypes.map(item => item.raw.posterior).join(", ");
+      const archetypeLocal = strategyArchetypes.map(item => item.raw.local).join(", ");
+      const archetypeStability = strategyArchetypes.map(item => item.raw.stability).join(", ");
+      const archetypeSafety = strategyArchetypes.map(item => item.raw.safety).join(", ");
+      const rKeyMap = {
+        priority: "df$priority",
+        deployability: "df$deployability",
+        frontier: "df$frontier",
+        publishability: "df$publishability",
+        software: "df$software",
+        empirical: "df$empirical",
+        scope: "df$scope",
+        novelty: "df$novelty",
+        biasGuard: "df$bias_guard",
+        decisionLift: "df$decision_lift",
+        localLeverage: "df$local_leverage",
+        dataLeverage: "df$data_leverage",
+        year: "year_signal",
+        focus: "focus"
+      };
+      const currentScenarioVar = `df$scenario_${preset.id.replace(/-/g, "_")}`;
+      const scenarioLines = scenarioPresets.flatMap(item => {
+        const safeId = item.id.replace(/-/g, "_");
+        const focusValues = item.focusThemes.map(theme => `"${escapeRString(theme)}"`).join(", ");
+        const expr = Object.entries(item.weights)
+          .map(([key, value]) => `${value} * ${key === "focus" ? `focus_${safeId}` : rKeyMap[key]}`)
+          .join(" + ");
+        return [
+          `focus_themes_${safeId} <- c(${focusValues})`,
+          `focus_${safeId} <- if (length(focus_themes_${safeId}) == 0) rep(75, nrow(df)) else ifelse(df$themes %in% focus_themes_${safeId}, 100, 55)`,
+          `df$scenario_${safeId} <- round(${expr}, 2)`
+        ];
+      });
+      const scenarioMatrix = scenarioPresets.map(item => `df$scenario_${item.id.replace(/-/g, "_")}`).join(", ");
+      return [
+        "ids <- c(" + ids + ")",
+        "year <- c(" + years + ")",
+        "themes <- c(" + themes + ")",
+        "software <- c(" + software + ")",
+        "empirical <- c(" + empirical + ")",
+        "scope <- c(" + scope + ")",
+        "novelty <- c(" + novelty + ")",
+        "bias_guard <- c(" + biasGuard + ")",
+        "decision_lift <- c(" + decisionLift + ")",
+        "local_leverage <- c(" + localLeverage + ")",
+        "data_leverage <- c(" + dataLeverage + ")",
+        "scenario_current <- c(" + currentScenarioFit + ")",
+        "posterior_promise <- c(" + posteriorPromise + ")",
+        "local_calibration <- c(" + methodLocalCalibration + ")",
+        "mesh_support <- c(" + methodMeshSupport + ")",
+        "effective_local <- c(" + methodEffectiveLocal + ")",
+        "upside_score <- c(" + methodUpside + ")",
+        "tune_raw <- c(upside = " + customRaw.upside + ", posterior = " + customRaw.posterior + ", local = " + customRaw.local + ", stability = " + customRaw.stability + ", safety = " + customRaw.safety + ")",
+        "compare_a_id <- \"" + compareAId + "\"",
+        "compare_b_id <- \"" + compareBId + "\"",
+        "program_titles <- c(" + programTitles + ")",
+        "program_scenario_current <- c(" + programScenarioCurrent + ")",
+        "program_posterior <- c(" + programPosterior + ")",
+        "program_stability <- c(" + programStability + ")",
+        "program_local_strength <- c(" + programLocalStrength + ")",
+        "program_mesh_support <- c(" + programMeshSupport + ")",
+        "program_effective_local <- c(" + programEffectiveLocal + ")",
+        "program_execution_risk <- c(" + programExecutionRisk + ")",
+        "program_upside <- c(" + programUpside + ")",
+        "archetype_labels <- c(" + archetypeLabels + ")",
+        "archetype_upside <- c(" + archetypeUpside + ")",
+        "archetype_posterior <- c(" + archetypePosterior + ")",
+        "archetype_local <- c(" + archetypeLocal + ")",
+        "archetype_stability <- c(" + archetypeStability + ")",
+        "archetype_safety <- c(" + archetypeSafety + ")",
+        "focus_themes <- c(" + focusThemes + ")",
+        "df <- data.frame(ids, year, themes, software, empirical, scope, novelty, bias_guard, decision_lift, local_leverage, data_leverage, stringsAsFactors = FALSE)",
+        "df$deployability <- round(0.45 * df$software + 0.35 * df$empirical + 0.20 * df$scope, 2)",
+        "df$frontier <- round(0.45 * df$novelty + 0.35 * df$bias_guard + 0.20 * df$decision_lift, 2)",
+        "df$priority <- round(0.55 * df$frontier + 0.45 * df$deployability, 2)",
+        "df$publishability <- round(0.35 * df$frontier + 0.35 * df$local_leverage + 0.30 * df$data_leverage, 2)",
+        "year_signal <- 60 + ((df$year - 2024) * 10)",
+        "focus <- if (length(focus_themes) == 0) rep(75, nrow(df)) else ifelse(df$themes %in% focus_themes, 100, 55)",
+        ...scenarioLines,
+        "df$band <- ifelse(df$deployability >= 74, 'Deployable now', ifelse(df$deployability >= 63, 'High-promise emerging', ifelse(df$deployability >= 50, 'Research-stage', 'Speculative frontier')))",
+        "ord_priority <- df[order(-df$priority, -df$deployability, df$ids), ]",
+        "ord_scenario <- df[order(-" + currentScenarioVar + ", -df$publishability, -df$priority, df$ids), ]",
+        "scenario_matrix <- cbind(" + scenarioMatrix + ")",
+        "mean_scenario <- round(rowMeans(scenario_matrix), 2)",
+        "worst_scenario <- round(apply(scenario_matrix, 1, min), 2)",
+        "variance_scenario <- apply(scenario_matrix, 1, function(row) mean((row - round(mean(row), 2))^2))",
+        "sd_scenario <- round(sqrt(variance_scenario), 2)",
+        "df$stability <- round(100 - pmin(35, sd_scenario * 4), 2)",
+        "df$evidence_strength <- round(0.45 * df$empirical + 0.20 * df$local_leverage + 0.20 * df$data_leverage + 0.15 * year_signal, 2)",
+        "df$execution_risk <- round(100 - (0.60 * df$deployability + 0.25 * df$software + 0.15 * df$empirical), 2)",
+        "df$promise_score <- round(0.30 * mean_scenario + 0.18 * worst_scenario + 0.18 * df$stability + 0.18 * df$publishability + 0.16 * df$evidence_strength, 2)",
+        "df$scenario_current <- scenario_current",
+        "df$posterior_promise <- posterior_promise",
+        "df$local_calibration <- local_calibration",
+        "df$mesh_support <- mesh_support",
+        "df$effective_local <- effective_local",
+        "df$upside_score <- upside_score",
+        "ord_promise <- df[order(-df$promise_score, -df$stability, df$ids), ]",
+        "tune_weights <- tune_raw / sum(tune_raw)",
+        "df$tuned_score <- round((tune_weights['upside'] * df$upside_score) + (tune_weights['posterior'] * ((0.72 * df$posterior_promise) + (0.28 * df$scenario_current))) + (tune_weights['local'] * df$effective_local) + (tune_weights['stability'] * df$stability) + (tune_weights['safety'] * (100 - df$execution_risk)), 2)",
+        "ord_tuned <- df[order(-df$tuned_score, -df$posterior_promise, df$ids), ]",
+        "compare_df <- df[match(c(compare_a_id, compare_b_id), df$ids), ]",
+        "compare_winner <- if (compare_df$tuned_score[1] >= compare_df$tuned_score[2]) compare_a_id else compare_b_id",
+        "program_df <- data.frame(title = program_titles, scenario_current = program_scenario_current, posterior_promise = program_posterior, stability = program_stability, local_strength = program_local_strength, mesh_support = program_mesh_support, effective_local = program_effective_local, execution_risk = program_execution_risk, upside = program_upside, stringsAsFactors = FALSE)",
+        "program_df$tuned_score <- round((tune_weights['upside'] * program_df$upside) + (tune_weights['posterior'] * ((0.72 * program_df$posterior_promise) + (0.28 * program_df$scenario_current))) + (tune_weights['local'] * program_df$effective_local) + (tune_weights['stability'] * program_df$stability) + (tune_weights['safety'] * (100 - program_df$execution_risk)), 2)",
+        "ord_program_tuned <- program_df[order(-program_df$tuned_score, -program_df$posterior_promise, program_df$title), ]",
+        "sweep_method_ids <- character(length(archetype_labels))",
+        "sweep_program_titles <- character(length(archetype_labels))",
+        "for (i in seq_along(archetype_labels)) {",
+        "  sweep_raw <- c(upside = archetype_upside[i], posterior = archetype_posterior[i], local = archetype_local[i], stability = archetype_stability[i], safety = archetype_safety[i])",
+        "  sweep_weights <- sweep_raw / sum(sweep_raw)",
+        "  df$sweep_tuned <- round((sweep_weights['upside'] * df$upside_score) + (sweep_weights['posterior'] * ((0.72 * df$posterior_promise) + (0.28 * df$scenario_current))) + (sweep_weights['local'] * df$effective_local) + (sweep_weights['stability'] * df$stability) + (sweep_weights['safety'] * (100 - df$execution_risk)), 2)",
+        "  ord_sweep <- df[order(-df$sweep_tuned, -df$posterior_promise, df$ids), ]",
+        "  sweep_method_ids[i] <- ord_sweep$ids[1]",
+        "  program_df$sweep_tuned <- round((sweep_weights['upside'] * program_df$upside) + (sweep_weights['posterior'] * ((0.72 * program_df$posterior_promise) + (0.28 * program_df$scenario_current))) + (sweep_weights['local'] * program_df$effective_local) + (sweep_weights['stability'] * program_df$stability) + (sweep_weights['safety'] * (100 - program_df$execution_risk)), 2)",
+        "  ord_program_sweep <- program_df[order(-program_df$sweep_tuned, -program_df$posterior_promise, program_df$title), ]",
+        "  sweep_program_titles[i] <- ord_program_sweep$title[1]",
+        "}",
+        "method_levels <- sort(unique(sweep_method_ids))",
+        "method_counts <- sapply(method_levels, function(level) sum(sweep_method_ids == level))",
+        "consensus_method_id <- method_levels[order(-method_counts, method_levels)][1]",
+        "program_levels <- sort(unique(sweep_program_titles))",
+        "program_counts <- sapply(program_levels, function(level) sum(sweep_program_titles == level))",
+        "consensus_program_title <- program_levels[order(-program_counts, program_levels)][1]",
+        "bands <- c('Deployable now', 'High-promise emerging', 'Research-stage', 'Speculative frontier')",
+        "counts <- table(factor(df$band, levels = bands))",
+        "paste(c(ord_priority$ids[1:3], ord_scenario$ids[1:3], ord_promise$ids[1:3], ord_tuned$ids[1], ord_program_tuned$title[1], consensus_method_id, consensus_program_title, compare_winner, sprintf('%.2f', mean(df$deployability)), sprintf('%.2f', mean(df$publishability)), sprintf('%.2f', mean(" + currentScenarioVar + ")), sprintf('%.2f', mean(df$promise_score)), sprintf('%.2f', mean(df$effective_local)), as.integer(counts)), collapse='|')"
+      ].join("\n");
+    }
+
+    function normalizeWebRResult(value) {
+      if (typeof value === "string") return value;
+      if (Array.isArray(value)) return normalizeWebRResult(value[0]);
+      if (value && typeof value === "object") {
+        if (Object.prototype.hasOwnProperty.call(value, "values")) return normalizeWebRResult(value.values);
+        if (Object.prototype.hasOwnProperty.call(value, "value")) return normalizeWebRResult(value.value);
+      }
+      return String(value ?? "");
+    }
+
+    async function initWebR() {
+      if (validationState.webR) return validationState.webR;
+      if (validationState.loading) return null;
+      validationState.loading = true;
+      const status = document.getElementById("webrStatus");
+      const progressWrap = document.getElementById("progressWrap");
+      const progressText = document.getElementById("progressText");
+      const progressBar = document.getElementById("progressBar");
+      progressWrap.style.display = "block";
+      status.textContent = "Loading WebR";
+      status.className = "status-badge";
+      try {
+        progressText.textContent = "Importing WebR runtime...";
+        progressBar.value = 18;
+        const mod = await import("https://webr.r-wasm.org/v0.4.4/webr.mjs");
+        progressText.textContent = "Starting R environment...";
+        progressBar.value = 55;
+        validationState.webR = new mod.WebR();
+        await validationState.webR.init();
+        progressText.textContent = "WebR ready.";
+        progressBar.value = 100;
+        status.textContent = "WebR ready";
+        status.className = "status-badge ready";
+        return validationState.webR;
+      } catch (error) {
+        status.textContent = "WebR failed";
+        status.className = "status-badge error";
+        document.getElementById("validationResults").innerHTML =
+          `<strong>Validation could not start.</strong><br>${error.message || String(error)}`;
+        return null;
+      } finally {
+        validationState.loading = false;
+      }
+    }
+
+    function jsValidationSnapshot() {
+      const orderedPriority = [...scoredMethods].sort((a, b) => b.priority - a.priority || b.deployability - a.deployability || a.id.localeCompare(b.id));
+      const orderedScenario = currentScenarioOrderedMethods();
+      const tuning = buildCustomStrategyRanking();
+      const sweep = buildStrategySweepSnapshot();
+      const comparator = getComparatorMethods();
+      const counts = bandCounts(scoredMethods);
+      return {
+        priorityTopIds: orderedPriority.slice(0, 3).map(item => item.id),
+        scenarioTopIds: orderedScenario.slice(0, 3).map(item => item.id),
+        promiseTopIds: modeledMethods.slice(0, 3).map(item => item.id),
+        tunedTopMethodId: tuning.methods[0].id,
+        tunedTopProgramTitle: tuning.programs[0].title,
+        sweepConsensusMethodId: sweep.consensusMethod.item.id,
+        sweepConsensusProgramTitle: sweep.consensusProgram.item.title,
+        comparatorWinnerId: comparator.a.tunedScore >= comparator.b.tunedScore ? comparator.a.id : comparator.b.id,
+        meanDeployability: (scoredMethods.reduce((sum, item) => sum + item.deployability, 0) / scoredMethods.length).toFixed(2),
+        meanPublishability: (scoredMethods.reduce((sum, item) => sum + item.publishability, 0) / scoredMethods.length).toFixed(2),
+        meanScenarioFit: (orderedScenario.reduce((sum, item) => sum + item.scenarioFit, 0) / orderedScenario.length).toFixed(2),
+        meanPromise: (modeledMethods.reduce((sum, item) => sum + item.promiseScore, 0) / modeledMethods.length).toFixed(2),
+        meanEffectiveLocal: (tuning.methods.reduce((sum, item) => sum + item.effectiveLocal, 0) / tuning.methods.length).toFixed(2),
+        counts: [
+          counts["Deployable now"] || 0,
+          counts["High-promise emerging"] || 0,
+          counts["Research-stage"] || 0,
+          counts["Speculative frontier"] || 0
+        ]
+      };
+    }
+
+    async function runValidation() {
+      if (validationState.running) return;
+      validationState.running = true;
+      const progressWrap = document.getElementById("progressWrap");
+      const progressText = document.getElementById("progressText");
+      const progressBar = document.getElementById("progressBar");
+      const resultsEl = document.getElementById("validationResults");
+      const status = document.getElementById("webrStatus");
+      const runBtn = document.getElementById("runValidationBtn");
+      const script = generateRScript();
+      document.getElementById("scriptPreview").textContent = script;
+      runBtn.disabled = true;
+      progressWrap.style.display = "block";
+      progressText.textContent = "Preparing validation run...";
+      progressBar.value = 12;
+      try {
+        const webR = await initWebR();
+        if (!webR) return;
+        progressText.textContent = "Executing base R scoring...";
+        progressBar.value = 78;
+        const proxy = await webR.evalR(script);
+        let raw;
+        try {
+          raw = await proxy.toJs();
+        } finally {
+          if (proxy && typeof proxy.destroy === "function") {
+            try { await proxy.destroy(); } catch (error) {}
+          }
+        }
+        const payload = normalizeWebRResult(raw).trim();
+        const parts = payload.split("|");
+        const js = jsValidationSnapshot();
+        const rPriorityTop = parts.slice(0, 3);
+        const rScenarioTop = parts.slice(3, 6);
+        const rPromiseTop = parts.slice(6, 9);
+        const rTunedTopMethod = parts[9];
+        const rTunedTopProgram = parts[10];
+        const rSweepConsensusMethod = parts[11];
+        const rSweepConsensusProgram = parts[12];
+        const rComparatorWinner = parts[13];
+        const rMeanDeployability = parts[14];
+        const rMeanPublishability = parts[15];
+        const rMeanScenarioFit = parts[16];
+        const rMeanPromise = parts[17];
+        const rMeanEffectiveLocal = parts[18];
+        const rCounts = parts.slice(19).map(value => Number(value));
+        const checks = [
+          {
+            label: "Baseline priority top 3",
+            js: js.priorityTopIds.join(", "),
+            r: rPriorityTop.join(", "),
+            pass: js.priorityTopIds.join("|") === rPriorityTop.join("|")
+          },
+          {
+            label: "Current scenario top 3",
+            js: js.scenarioTopIds.join(", "),
+            r: rScenarioTop.join(", "),
+            pass: js.scenarioTopIds.join("|") === rScenarioTop.join("|")
+          },
+          {
+            label: "Promise-model top 3",
+            js: js.promiseTopIds.join(", "),
+            r: rPromiseTop.join(", "),
+            pass: js.promiseTopIds.join("|") === rPromiseTop.join("|")
+          },
+          {
+            label: "Tuned top method",
+            js: js.tunedTopMethodId,
+            r: rTunedTopMethod,
+            pass: js.tunedTopMethodId === rTunedTopMethod
+          },
+          {
+            label: "Tuned top program",
+            js: js.tunedTopProgramTitle,
+            r: rTunedTopProgram,
+            pass: js.tunedTopProgramTitle === rTunedTopProgram
+          },
+          {
+            label: "Sweep consensus method",
+            js: js.sweepConsensusMethodId,
+            r: rSweepConsensusMethod,
+            pass: js.sweepConsensusMethodId === rSweepConsensusMethod
+          },
+          {
+            label: "Sweep consensus program",
+            js: js.sweepConsensusProgramTitle,
+            r: rSweepConsensusProgram,
+            pass: js.sweepConsensusProgramTitle === rSweepConsensusProgram
+          },
+          {
+            label: "Comparator winner",
+            js: js.comparatorWinnerId,
+            r: rComparatorWinner,
+            pass: js.comparatorWinnerId === rComparatorWinner
+          },
+          {
+            label: "Mean deployability",
+            js: js.meanDeployability,
+            r: rMeanDeployability,
+            pass: js.meanDeployability === rMeanDeployability
+          },
+          {
+            label: "Mean publishability",
+            js: js.meanPublishability,
+            r: rMeanPublishability,
+            pass: js.meanPublishability === rMeanPublishability
+          },
+          {
+            label: "Mean scenario fit",
+            js: js.meanScenarioFit,
+            r: rMeanScenarioFit,
+            pass: js.meanScenarioFit === rMeanScenarioFit
+          },
+          {
+            label: "Mean promise",
+            js: js.meanPromise,
+            r: rMeanPromise,
+            pass: js.meanPromise === rMeanPromise
+          },
+          {
+            label: "Mean effective local support",
+            js: js.meanEffectiveLocal,
+            r: rMeanEffectiveLocal,
+            pass: js.meanEffectiveLocal === rMeanEffectiveLocal
+          },
+          {
+            label: "Band counts",
+            js: js.counts.join(", "),
+            r: rCounts.join(", "),
+            pass: js.counts.join("|") === rCounts.join("|")
+          }
+        ];
+        const passCount = checks.filter(check => check.pass).length;
+        progressText.textContent = "Validation complete.";
+        progressBar.value = 100;
+        status.textContent = passCount === checks.length ? "Validation passed" : "Validation mismatch";
+        status.className = "status-badge " + (passCount === checks.length ? "ready" : "error");
+        resultsEl.innerHTML = `
+          <div style="margin-bottom:0.8rem;"><strong>${passCount}/${checks.length} checks passed.</strong></div>
+          <div style="overflow:auto;">
+            <table>
+              <thead>
+                <tr><th>Check</th><th>JavaScript</th><th>WebR</th><th>Status</th></tr>
+              </thead>
+              <tbody>
+                ${checks.map(check => `
+                  <tr>
+                    <td>${check.label}</td>
+                    <td>${check.js}</td>
+                    <td>${check.r}</td>
+                    <td><strong style="color:${check.pass ? "var(--green)" : "var(--rose)"};">${check.pass ? "PASS" : "FAIL"}</strong></td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } catch (error) {
+        status.textContent = "Validation failed";
+        status.className = "status-badge error";
+        resultsEl.innerHTML = `<strong>Validation errored.</strong><br>${error.message || String(error)}`;
+      } finally {
+        validationState.running = false;
+        runBtn.disabled = false;
+      }
+    }
+
+    async function loadLiveMesh() {
+      const statusEl = document.getElementById("meshStatus");
+      const loadBtn = document.getElementById("loadMeshBtn");
+      const resetBtn = document.getElementById("resetMeshBtn");
+      if (typeof window.showDirectoryPicker !== "function") {
+        statusEl.textContent = "Live folder loading requires a Chromium browser that supports the File System Access API.";
+        return;
+      }
+      loadBtn.disabled = true;
+      resetBtn.disabled = true;
+      statusEl.textContent = "Waiting for a folder selection...";
+      try {
+        const handle = await window.showDirectoryPicker({ mode: "read" });
+        const snapshot = await buildLiveMeshSnapshot(handle, message => {
+          statusEl.textContent = message;
+        });
+        setMeshSnapshot(snapshot);
+        refreshAtlas();
+      } catch (error) {
+        if (error && error.name === "AbortError") {
+          statusEl.textContent = "Live folder scan cancelled. The previous mesh is still active.";
+        } else {
+          statusEl.textContent = `Live folder scan failed: ${error.message || String(error)}`;
+        }
+      } finally {
+        loadBtn.disabled = false;
+        resetBtn.disabled = false;
+      }
+    }
+
+    function openMeshImport() {
+      const input = document.getElementById("importMeshInput");
+      input.value = "";
+      if (typeof input.click === "function") input.click();
+    }
+
+    async function importMeshSnapshot(event) {
+      const file = event.target?.files?.[0];
+      if (!file) return;
+      try {
+        const raw = JSON.parse(await file.text());
+        if (!raw.source) raw.source = "Imported snapshot";
+        setMeshSnapshot(raw);
+        refreshAtlas();
+      } catch (error) {
+        document.getElementById("meshStatus").textContent = `Mesh import failed: ${error.message || String(error)}`;
+      } finally {
+        event.target.value = "";
+      }
+    }
+
+    function resetMeshToBundled() {
+      resetMeshSnapshot();
+      refreshAtlas();
+    }
+
+    async function copyScript() {
+      const script = generateRScript();
+      document.getElementById("scriptPreview").textContent = script;
+      try {
+        await navigator.clipboard.writeText(script);
+        document.getElementById("validationResults").innerHTML = "R script copied to clipboard.";
+      } catch (error) {
+        document.getElementById("validationResults").innerHTML = "Could not copy automatically. The script is visible in the preview panel.";
+      }
+    }
+
+    async function copyBrief() {
+      const brief = generateStudyBrief();
+      document.getElementById("briefPreview").textContent = brief;
+      try {
+        await navigator.clipboard.writeText(brief);
+        document.getElementById("briefStatus").textContent = "Study brief copied to clipboard.";
+      } catch (error) {
+        document.getElementById("briefStatus").textContent = "Could not copy automatically. The brief is visible in the preview panel.";
+      }
+    }
+
+    function downloadBrief() {
+      const brief = generateStudyBrief();
+      document.getElementById("briefPreview").textContent = brief;
+      downloadTextFile("meta-frontier-study-brief.md", brief);
+      document.getElementById("briefStatus").textContent = "Study brief download triggered.";
+    }
+
+    document.getElementById("scriptPreview").textContent = generateRScript();
+    document.getElementById("loadMeshBtn").addEventListener("click", loadLiveMesh);
+    document.getElementById("exportMeshBtn").addEventListener("click", exportMeshSnapshot);
+    document.getElementById("importMeshBtn").addEventListener("click", openMeshImport);
+    document.getElementById("importMeshInput").addEventListener("change", importMeshSnapshot);
+    document.getElementById("resetMeshBtn").addEventListener("click", resetMeshToBundled);
+    document.getElementById("runValidationBtn").addEventListener("click", runValidation);
+    document.getElementById("copyScriptBtn").addEventListener("click", copyScript);
+    document.getElementById("copyBriefBtn").addEventListener("click", copyBrief);
+    document.getElementById("downloadBriefBtn").addEventListener("click", downloadBrief);
+  </script>
+</body>
+</html>

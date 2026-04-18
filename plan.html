@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan | Meta-Frontier Readiness Atlas</title>
+  <style>
+    :root {
+      --ink: #13212c;
+      --muted: #536471;
+      --panel: rgba(255, 255, 255, 0.78);
+      --line: rgba(19, 33, 44, 0.12);
+      --bg-1: #f2efe8;
+      --bg-2: #d7e5ef;
+      --accent: #0f766e;
+      --shadow: 0 24px 60px rgba(19, 33, 44, 0.14);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Aptos", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.18), transparent 28rem),
+        radial-gradient(circle at 90% 20%, rgba(217, 119, 6, 0.16), transparent 24rem),
+        linear-gradient(160deg, var(--bg-1), #fbfaf7 52%, var(--bg-2));
+      min-height: 100vh;
+    }
+    .wrap {
+      width: min(1080px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+    .hero, .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 1.5rem;
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+    .hero { padding: 2rem; margin-bottom: 1.5rem; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(15, 118, 110, 0.1);
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+    }
+    h1 {
+      margin: 0.9rem 0 0.65rem;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 0.95;
+      max-width: 12ch;
+    }
+    .lede {
+      max-width: 70ch;
+      font-size: 1.04rem;
+      line-height: 1.7;
+      color: var(--muted);
+      margin: 0;
+    }
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .panel { padding: 1.35rem 1.35rem 1.2rem; }
+    .span-6 { grid-column: span 6; }
+    .span-4 { grid-column: span 4; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: 1 / -1; }
+    h2 { margin: 0 0 0.75rem; line-height: 1.1; }
+    p, li { line-height: 1.65; color: var(--muted); }
+    ul { margin: 0; padding-left: 1.1rem; }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 0.9rem;
+    }
+    .pill {
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(19, 33, 44, 0.06);
+      color: var(--ink);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .mini {
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    a:hover { text-decoration: underline; }
+    @media (max-width: 860px) {
+      .span-6, .span-4, .span-8 { grid-column: 1 / -1; }
+      .hero, .panel { padding: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Project Plan</div>
+      <h1>Meta-Frontier Readiness Atlas</h1>
+      <p class="lede">
+        This project turns the recent methods scan into a decision-facing HTML atlas: which frontier
+        meta-analysis methods are usable now, which are promising but still fragile, and which remain
+        genuinely research-stage.
+      </p>
+      <div class="pill-row">
+        <span class="pill">Standalone HTML app</span>
+        <span class="pill">Weighted readiness scoring</span>
+        <span class="pill">Primary-source links</span>
+        <span class="pill">WebR cross-check</span>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="panel span-8">
+        <h2>Scope</h2>
+        <ul>
+          <li>Cover the most relevant 2024 to 2026 frontier methods from statistics and methods journals.</li>
+          <li>Rank methods by deployability and frontier value rather than novelty alone.</li>
+          <li>Separate narrow-use but ready tools from broad but still experimental frameworks.</li>
+          <li>Keep the scoring rubric visible so the ranking is auditable inside the page.</li>
+        </ul>
+      </section>
+      <section class="panel span-4">
+        <h2>Core Output</h2>
+        <ul>
+          <li>Top-line summary cards</li>
+          <li>Ranked method deck</li>
+          <li>Readiness bands</li>
+          <li>Source table with direct paper links</li>
+        </ul>
+      </section>
+      <section class="panel span-6">
+        <h2>Scoring Logic</h2>
+        <ul>
+          <li><strong>Deployability</strong> = 0.45 software + 0.35 empirical + 0.20 scope</li>
+          <li><strong>Frontier score</strong> = 0.45 novelty + 0.35 bias handling + 0.20 decision lift</li>
+          <li><strong>Priority score</strong> = 0.55 frontier + 0.45 deployability</li>
+        </ul>
+      </section>
+      <section class="panel span-6">
+        <h2>Method Set</h2>
+        <div class="pill-row">
+          <span class="pill">Small-k robust variance methods</span>
+          <span class="pill">Exact sparse-data methods</span>
+          <span class="pill">P-hacking-aware synthesis</span>
+          <span class="pill">RoBMA-regression</span>
+          <span class="pill">Dependent-effect bias correction</span>
+          <span class="pill">Transportability with IPD</span>
+          <span class="pill">RCT plus observational integration</span>
+          <span class="pill">IPD survival NMA</span>
+          <span class="pill">Individualized treatment-rule synthesis</span>
+          <span class="pill">Non-normal random effects</span>
+          <span class="pill">Multi-indication HTA synthesis</span>
+        </div>
+      </section>
+      <section class="panel span-12">
+        <h2>WebR Validation Plan</h2>
+        <ul>
+          <li>Recompute weighted scores in base R from the embedded method data.</li>
+          <li>Compare top ranked method IDs between JavaScript and R.</li>
+          <li>Compare the mean deployability score.</li>
+          <li>Compare the counts inside each readiness band.</li>
+        </ul>
+        <p class="mini">
+          The WebR panel is reviewer-facing only and does not drive the page logic.
+        </p>
+      </section>
+      <section class="panel span-12">
+        <h2>Build Order</h2>
+        <ul>
+          <li>1. Freeze the method set and the scoring inputs.</li>
+          <li>2. Implement ranking and banding in plain JavaScript.</li>
+          <li>3. Build the visual atlas with summary cards and source references.</li>
+          <li>4. Add the WebR panel and R script preview.</li>
+          <li>5. Place the project in <code>C:\Projects</code> with <code>index.html</code> and this plan.</li>
+        </ul>
+        <p class="mini">Main app entry: <a href="index.html">index.html</a></p>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
